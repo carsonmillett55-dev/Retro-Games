@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google AdSense Script (Required) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6924346257512616"
+     crossorigin="anonymous"></script>
+     
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>FreeRetroSounds.com — Retro Game Sound Packs</title>
@@ -59,9 +63,6 @@
     #game-container { display: none; }
     #game-canvas { background: #262b44; border: 4px solid var(--fg); cursor: crosshair; image-rendering: pixelated; touch-action: none; width: 100%; max-width: 800px; height: auto; }
     
-    .ad-slot { border: 2px dashed var(--muted); background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-family: 'Press Start 2P', cursive; font-size: 8px; position: relative; }
-    .ad-slot::after { content: 'SPONSOR'; position: absolute; bottom: 4px; right: 4px; opacity: 0.5; }
-    
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s steps(3); }
     .modal-overlay.visible { opacity: 1; visibility: visible; }
 
@@ -117,7 +118,21 @@
         </div>
       </div>
     </header>
-    <div class="max-w-4xl mx-auto px-6 mb-12"><div class="ad-slot h-24 w-full rounded"></div></div>
+
+    <!-- AD SLOT: Top Banner (Horizontal) -->
+    <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
+      <!-- NOTE: Replace XXXXXXXXXX with your actual Ad Slot ID from AdSense Dashboard -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6924346257512616"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
     <section id="library" class="py-24 px-6 relative">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16 reveal">
@@ -127,9 +142,27 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="packs-container"></div>
       </div>
     </section>
+
+    <!-- AD SLOT: In-Feed (Optional, placed within content) -->
+    <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
+        <!-- NOTE: Replace XXXXXXXXXX with your actual Ad Slot ID (can be same as above or different) -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6924346257512616"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
     <footer id="about" class="py-12 px-6 border-t-4 border-[var(--fg)] mt-20 bg-[var(--bg-elevated)]">
       <div class="max-w-7xl mx-auto text-center text-xs text-[var(--muted)]">
         <p class="pixel-font text-[8px]">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
+        <div class="mt-4">
+          <a href="/privacy.html" class="hover:text-[var(--accent)] text-[10px] pixel-font">PRIVACY POLICY</a>
+        </div>
       </div>
     </footer>
   </div>
@@ -493,65 +526,45 @@
       { blocks: [{ x: 550, y: 440, w: 20, h: 60 }, { x: 650, y: 440, w: 20, h: 60 }, { x: 600, y: 395, w: 120, h: 20 }, { x: 600, y: 375, w: 20, h: 60 }, { x: 600, y: 330, w: 80, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 600, y: 300 }, { x: 550, y: 395 }] },
       // Level 5
       { blocks: [{ x: 500, y: 430, w: 20, h: 100 }, { x: 600, y: 430, w: 20, h: 100 }, { x: 550, y: 365, w: 120, h: 20 }, { x: 550, y: 345, w: 20, h: 60 }, { x: 750, y: 455, w: 60, h: 30 }, { x: 750, y: 420, w: 20, h: 40 }], creatures: [{ x: 550, y: 305 }, { x: 500, y: 455 }, { x: 600, y: 455 }, { x: 750, y: 385 }, { x: 750, y: 455 }] },
-
-      // --- NEW LEVELS (6-10) ---
-      
       // Level 6: The Tunnel
       { 
         blocks: [
-          { x: 500, y: 420, w: 20, h: 100 }, // Left wall
-          { x: 700, y: 420, w: 20, h: 100 }, // Right wall
-          { x: 600, y: 355, w: 220, h: 20 }, // Roof
-          { x: 600, y: 455, w: 40, h: 30 }   // Floor obstacle
+          { x: 500, y: 420, w: 20, h: 100 }, { x: 700, y: 420, w: 20, h: 100 }, { x: 600, y: 355, w: 220, h: 20 }, { x: 600, y: 455, w: 40, h: 30 }
         ], 
         creatures: [{ x: 550, y: 420 }, { x: 650, y: 420 }, { x: 600, y: 320 }] 
       },
-
       // Level 7: High Tower
       { 
         blocks: [
-          { x: 650, y: 420, w: 60, h: 120 }, // Base
-          { x: 650, y: 340, w: 40, h: 40 },  // Middle
-          { x: 650, y: 290, w: 60, h: 20 },  // Top
-          { x: 650, y: 260, w: 20, h: 40 }   // Peak
+          { x: 650, y: 420, w: 60, h: 120 }, { x: 650, y: 340, w: 40, h: 40 }, { x: 650, y: 290, w: 60, h: 20 }, { x: 650, y: 260, w: 20, h: 40 }
         ], 
         creatures: [{ x: 650, y: 455 }, { x: 650, y: 310 }, { x: 650, y: 220 }] 
       },
-
       // Level 8: Twin Towers
       { 
         blocks: [
-          { x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 }, // Left set
-          { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 },  // Right set
-          { x: 630, y: 380, w: 60, h: 20 }   // Bridge
+          { x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 },
+          { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 },
+          { x: 630, y: 380, w: 60, h: 20 }
         ], 
         creatures: [{ x: 530, y: 455 }, { x: 730, y: 455 }, { x: 530, y: 320 }, { x: 730, y: 320 }] 
       },
-
       // Level 9: The Fortress
       { 
         blocks: [
-          { x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, // Walls
-          { x: 600, y: 315, w: 220, h: 20 }, // Roof
-          { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }, // Inner blocks
+          { x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, { x: 600, y: 315, w: 220, h: 20 },
+          { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }
         ], 
         creatures: [{ x: 550, y: 395 }, { x: 650, y: 395 }, { x: 600, y: 280 }, { x: 600, y: 455 }] 
       },
-
       // Level 10: Final Castle
       { 
         blocks: [
-          // Base Walls
           { x: 450, y: 400, w: 30, h: 140 }, { x: 750, y: 400, w: 30, h: 140 },
-          // Mid Structures
           { x: 550, y: 430, w: 20, h: 80 }, { x: 650, y: 430, w: 20, h: 80 },
-          // Platforms
           { x: 600, y: 375, w: 220, h: 20 },
-          // Top Towers
           { x: 500, y: 310, w: 40, h: 80 }, { x: 700, y: 310, w: 40, h: 80 },
-          { x: 600, y: 300, w: 20, h: 100 }, // Central Spire
-          // Roof
-          { x: 600, y: 240, w: 120, h: 20 }
+          { x: 600, y: 300, w: 20, h: 100 }, { x: 600, y: 240, w: 120, h: 20 }
         ], 
         creatures: [{ x: 450, y: 315 }, { x: 750, y: 315 }, { x: 600, y: 455 }, { x: 600, y: 200 }, { x: 550, y: 340 }, { x: 650, y: 340 }] 
       }
