@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Aidio — Retro Game Sound Packs</title>
+  <title>FreeRetroSounds.com — Retro Game Sound Packs</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -86,7 +86,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-2 md:gap-3">
         <div class="w-6 h-6 md:w-8 md:h-8 bg-[var(--secondary)]"></div>
-        <span class="font-bold text-[8px] md:text-xs tracking-tight pixel-font hidden sm:block">AIDIO</span>
+        <span class="font-bold text-[6px] md:text-xs tracking-tight pixel-font hidden sm:block">FREERETROSOUNDS.COM</span>
       </div>
       <div class="flex items-center gap-3 md:gap-4 text-[8px] md:text-xs text-[var(--muted)]">
         <button id="nav-library" class="hover:text-[var(--accent)] transition-colors">LIBRARY</button>
@@ -129,7 +129,7 @@
     </section>
     <footer id="about" class="py-12 px-6 border-t-4 border-[var(--fg)] mt-20 bg-[var(--bg-elevated)]">
       <div class="max-w-7xl mx-auto text-center text-xs text-[var(--muted)]">
-        <p class="pixel-font text-[8px]">© 2026 AIDIO. ALL RIGHTS RESERVED.</p>
+        <p class="pixel-font text-[8px]">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
       </div>
     </footer>
   </div>
@@ -233,7 +233,7 @@
       noise.stop(time + duration);
     }
     
-    // Master Sound Router (Real-time & Offline)
+    // Master Sound Router
     function renderSound(type, ctx, time = 0) {
       const now = time;
       const vol = 0.3;
@@ -492,7 +492,69 @@
       // Level 4
       { blocks: [{ x: 550, y: 440, w: 20, h: 60 }, { x: 650, y: 440, w: 20, h: 60 }, { x: 600, y: 395, w: 120, h: 20 }, { x: 600, y: 375, w: 20, h: 60 }, { x: 600, y: 330, w: 80, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 600, y: 300 }, { x: 550, y: 395 }] },
       // Level 5
-      { blocks: [{ x: 500, y: 430, w: 20, h: 100 }, { x: 600, y: 430, w: 20, h: 100 }, { x: 550, y: 365, w: 120, h: 20 }, { x: 550, y: 345, w: 20, h: 60 }, { x: 750, y: 455, w: 60, h: 30 }, { x: 750, y: 420, w: 20, h: 40 }], creatures: [{ x: 550, y: 305 }, { x: 500, y: 455 }, { x: 600, y: 455 }, { x: 750, y: 385 }, { x: 750, y: 455 }] }
+      { blocks: [{ x: 500, y: 430, w: 20, h: 100 }, { x: 600, y: 430, w: 20, h: 100 }, { x: 550, y: 365, w: 120, h: 20 }, { x: 550, y: 345, w: 20, h: 60 }, { x: 750, y: 455, w: 60, h: 30 }, { x: 750, y: 420, w: 20, h: 40 }], creatures: [{ x: 550, y: 305 }, { x: 500, y: 455 }, { x: 600, y: 455 }, { x: 750, y: 385 }, { x: 750, y: 455 }] },
+
+      // --- NEW LEVELS (6-10) ---
+      
+      // Level 6: The Tunnel
+      { 
+        blocks: [
+          { x: 500, y: 420, w: 20, h: 100 }, // Left wall
+          { x: 700, y: 420, w: 20, h: 100 }, // Right wall
+          { x: 600, y: 355, w: 220, h: 20 }, // Roof
+          { x: 600, y: 455, w: 40, h: 30 }   // Floor obstacle
+        ], 
+        creatures: [{ x: 550, y: 420 }, { x: 650, y: 420 }, { x: 600, y: 320 }] 
+      },
+
+      // Level 7: High Tower
+      { 
+        blocks: [
+          { x: 650, y: 420, w: 60, h: 120 }, // Base
+          { x: 650, y: 340, w: 40, h: 40 },  // Middle
+          { x: 650, y: 290, w: 60, h: 20 },  // Top
+          { x: 650, y: 260, w: 20, h: 40 }   // Peak
+        ], 
+        creatures: [{ x: 650, y: 455 }, { x: 650, y: 310 }, { x: 650, y: 220 }] 
+      },
+
+      // Level 8: Twin Towers
+      { 
+        blocks: [
+          { x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 }, // Left set
+          { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 },  // Right set
+          { x: 630, y: 380, w: 60, h: 20 }   // Bridge
+        ], 
+        creatures: [{ x: 530, y: 455 }, { x: 730, y: 455 }, { x: 530, y: 320 }, { x: 730, y: 320 }] 
+      },
+
+      // Level 9: The Fortress
+      { 
+        blocks: [
+          { x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, // Walls
+          { x: 600, y: 315, w: 220, h: 20 }, // Roof
+          { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }, // Inner blocks
+        ], 
+        creatures: [{ x: 550, y: 395 }, { x: 650, y: 395 }, { x: 600, y: 280 }, { x: 600, y: 455 }] 
+      },
+
+      // Level 10: Final Castle
+      { 
+        blocks: [
+          // Base Walls
+          { x: 450, y: 400, w: 30, h: 140 }, { x: 750, y: 400, w: 30, h: 140 },
+          // Mid Structures
+          { x: 550, y: 430, w: 20, h: 80 }, { x: 650, y: 430, w: 20, h: 80 },
+          // Platforms
+          { x: 600, y: 375, w: 220, h: 20 },
+          // Top Towers
+          { x: 500, y: 310, w: 40, h: 80 }, { x: 700, y: 310, w: 40, h: 80 },
+          { x: 600, y: 300, w: 20, h: 100 }, // Central Spire
+          // Roof
+          { x: 600, y: 240, w: 120, h: 20 }
+        ], 
+        creatures: [{ x: 450, y: 315 }, { x: 750, y: 315 }, { x: 600, y: 455 }, { x: 600, y: 200 }, { x: 550, y: 340 }, { x: 650, y: 340 }] 
+      }
     ];
 
     function initGame() {
