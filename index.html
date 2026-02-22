@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google AdSense Script (Required) -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6924346257512616"
-     crossorigin="anonymous"></script>
-     
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>FreeRetroSounds.com — Retro Game Sound Packs</title>
+  
+  <!-- HTTPS Resources -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6924346257512616"
+     crossorigin="anonymous"></script>
+  <script>
+     // Pause ad requests immediately until consent is given (GDPR/CCPA)
+     (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+  </script>
+
   <style>
     :root {
       --bg: #1a1c2c;
@@ -78,6 +85,17 @@
     .reveal { opacity: 0; transform: translateY(20px); transition: all 0.4s steps(3); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
+    /* Form Styles */
+    .form-input { width: 100%; background: var(--bg); border: 2px solid var(--muted); color: var(--fg); padding: 10px; margin-bottom: 10px; font-family: 'Space Mono', monospace; font-size: 12px; }
+    .form-input:focus { border-color: var(--accent); outline: none; }
+
+    /* Cookie Banner */
+    #cookie-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-elevated); border-top: 4px solid var(--accent); padding: 16px; z-index: 9999; display: none; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+    }
+    #cookie-banner.visible { display: flex; }
+    #cookie-banner p { font-size: 12px; max-width: 600px; }
+
   </style>
 </head>
 <body class="relative">
@@ -119,18 +137,15 @@
       </div>
     </header>
 
-    <!-- AD SLOT: Top Banner (Horizontal) -->
+    <!-- AD SLOT 1 (Your specific ID) -->
     <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
-      <!-- NOTE: Replace XXXXXXXXXX with your actual Ad Slot ID from AdSense Dashboard -->
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-6924346257512616"
-           data-ad-slot="XXXXXXXXXX"
+           data-ad-slot="2296260033"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
-      <script>
-           (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <section id="library" class="py-24 px-6 relative">
@@ -143,26 +158,44 @@
       </div>
     </section>
 
-    <!-- AD SLOT: In-Feed (Optional, placed within content) -->
+    <!-- AD SLOT 2 (Your specific ID) -->
     <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
-        <!-- NOTE: Replace XXXXXXXXXX with your actual Ad Slot ID (can be same as above or different) -->
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-6924346257512616"
-             data-ad-slot="XXXXXXXXXX"
+             data-ad-slot="2296260033"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <footer id="about" class="py-12 px-6 border-t-4 border-[var(--fg)] mt-20 bg-[var(--bg-elevated)]">
-      <div class="max-w-7xl mx-auto text-center text-xs text-[var(--muted)]">
-        <p class="pixel-font text-[8px]">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
-        <div class="mt-4">
-          <a href="/privacy.html" class="hover:text-[var(--accent)] text-[10px] pixel-font">PRIVACY POLICY</a>
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left text-xs text-[var(--muted)]">
+        
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ABOUT</h4>
+          <p>FreeRetroSounds.com provides high-quality, royalty-free 8-bit sound effects for indie developers and hobbyists.</p>
+          <button onclick="openLegalModal('about')" class="mt-2 text-[var(--accent)] hover:underline">Read More</button>
         </div>
+
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">LEGAL</h4>
+          <ul class="space-y-2">
+            <li><button onclick="openLegalModal('privacy')" class="hover:text-[var(--accent)]">Privacy Policy</button></li>
+            <li><button onclick="openLegalModal('terms')" class="hover:text-[var(--accent)]">Terms of Service</button></li>
+            <li><button onclick="openLegalModal('contact')" class="hover:text-[var(--accent)]">Contact Us</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ADS INFO</h4>
+          <p>We use Google AdSense to support this site.</p>
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="block mt-2 text-[var(--accent)] hover:underline">Google Ad Settings</a>
+        </div>
+      </div>
+      
+      <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-[var(--muted)] text-center">
+        <p class="pixel-font text-[8px] opacity-50">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
       </div>
     </footer>
   </div>
@@ -192,7 +225,7 @@
     </div>
   </div>
 
-  <!-- MODALS -->
+  <!-- MODALS (Sound Packs) -->
   <div class="modal-overlay" id="modal-overlay"></div>
   <div class="modal-content" id="modal">
     <div class="p-4 md:p-6 border-b-4 border-[var(--fg)] flex justify-between items-center flex-shrink-0 bg-[var(--bg-elevated)]">
@@ -205,7 +238,139 @@
     <div class="modal-body" id="sound-list"></div>
   </div>
 
+  <!-- LEGAL MODALS -->
+  <div class="modal-overlay" id="legal-overlay" onclick="closeLegalModal()"></div>
+  <div class="modal-content" id="legal-modal">
+    <div class="p-4 md:p-6 border-b-4 border-[var(--fg)] flex justify-between items-center flex-shrink-0 bg-[var(--bg-elevated)]">
+      <h3 class="text-xs md:text-sm font-bold pixel-font" id="legal-title">TITLE</h3>
+      <button class="text-[var(--muted)] hover:text-white text-2xl" onclick="closeLegalModal()">&times;</button>
+    </div>
+    <div class="modal-body text-[11px] leading-relaxed space-y-4" id="legal-body"></div>
+  </div>
+
+  <!-- Cookie Consent Banner -->
+  <div id="cookie-banner">
+    <p class="text-[var(--fg)]">
+      We use cookies to personalize ads and analyze traffic. By clicking "Accept", you consent to our use of cookies. 
+      <button onclick="openLegalModal('privacy')" class="text-[var(--accent)] underline">Privacy Policy</button>
+    </p>
+    <div class="flex gap-4">
+      <button id="decline-cookies" class="bg-gray-600 text-white px-4 py-2 text-xs pixel-font border-none cursor-pointer">DECLINE</button>
+      <button id="accept-cookies" class="bg-[var(--success)] text-[var(--bg)] px-4 py-2 text-xs pixel-font border-none cursor-pointer">ACCEPT</button>
+    </div>
+  </div>
+
   <script>
+    // --- COMPLIANCE & COOKIE LOGIC ---
+    const cookieBanner = document.getElementById('cookie-banner');
+    
+    const userConsent = localStorage.getItem('cookieConsent');
+    if (!userConsent) {
+        cookieBanner.classList.add('visible');
+    } else if (userConsent === 'accepted') {
+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
+    }
+
+    document.getElementById('accept-cookies').onclick = () => {
+        localStorage.setItem('cookieConsent', 'accepted');
+        cookieBanner.classList.remove('visible');
+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
+    };
+
+    document.getElementById('decline-cookies').onclick = () => {
+        localStorage.setItem('cookieConsent', 'declined');
+        cookieBanner.classList.remove('visible');
+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+    };
+
+    // Legal Modal Content
+    const legalModal = document.getElementById('legal-modal');
+    const legalOverlay = document.getElementById('legal-overlay');
+    const legalTitle = document.getElementById('legal-title');
+    const legalBody = document.getElementById('legal-body');
+
+    const legalContent = {
+        privacy: {
+            title: "PRIVACY POLICY",
+            body: `
+                <p><strong>Last updated:</strong> January 2026.</p>
+                <p>At FreeRetroSounds.com, we respect your privacy. This policy outlines how we handle your data.</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">1. Information We Collect</h4>
+                <p>We collect information you provide directly via our contact form (Name, Email, Message). We also use Google AdSense, which may collect data to serve personalized ads.</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">2. Cookies</h4>
+                <p>We use cookies to:</p>
+                <ul class="list-disc list-inside ml-2">
+                    <li>Remember your consent preferences.</li>
+                    <li>Serve personalized ads via Google AdSense.</li>
+                </ul>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">3. Third-Party Vendors</h4>
+                <p>We use Google AdSense. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" class="text-[var(--accent)] underline" target="_blank">Google Ad Settings</a>.</p>
+                <p class="mt-2">We use Formsubmit.co to handle contact form submissions. Their privacy policy applies to the processing of form data.</p>
+            `
+        },
+        terms: {
+            title: "TERMS OF SERVICE",
+            body: `
+                <p>By using this site, you agree to the following terms:</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">1. Usage Rights</h4>
+                <p>All sound effects generated by this site are free to use for personal and commercial projects. Attribution is appreciated but not required.</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">2. Disclaimer</h4>
+                <p>This site is provided "as is" without warranty of any kind. We are not responsible for any damages arising from the use of this site or its content.</p>
+            `
+        },
+        contact: {
+            title: "CONTACT US",
+            body: `
+                <p>Have questions or feedback? Send us a message below.</p>
+                <form action="https://formsubmit.co/driveyourtest@gmail.com" method="POST" class="mt-4 space-y-4">
+                    <!-- Formsubmit Configuration -->
+                    <input type="hidden" name="_subject" value="New Contact Form Submission">
+                    <input type="text" name="_honey" style="display:none">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    
+                    <div>
+                        <label class="block text-[10px] mb-1 pixel-font">NAME</label>
+                        <input type="text" name="name" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] mb-1 pixel-font">EMAIL</label>
+                        <input type="email" name="email" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] mb-1 pixel-font">MESSAGE</label>
+                        <textarea name="message" rows="4" class="form-input" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary w-full text-center">SEND MESSAGE</button>
+                </form>
+            `
+        },
+        about: {
+            title: "ABOUT US",
+            body: `
+                <p>FreeRetroSounds.com is a project dedicated to providing high-quality, authentic 8-bit sound effects for game developers and creators.</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Our Mission</h4>
+                <p>We believe great sound design shouldn't be expensive. Our procedural audio engine generates unique retro sounds on the fly.</p>
+                <h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">The Team</h4>
+                <p>Built by indie developers, for indie developers.</p>
+            `
+        }
+    };
+
+    function openLegalModal(type) {
+        const content = legalContent[type];
+        if (!content) return;
+        legalTitle.textContent = content.title;
+        legalBody.innerHTML = content.body;
+        legalOverlay.classList.add('visible');
+        legalModal.classList.add('visible');
+    }
+
+    function closeLegalModal() {
+        legalOverlay.classList.remove('visible');
+        legalModal.classList.remove('visible');
+    }
+
     // --- AUDIO ENGINE & ENCODER ---
     let audioCtx = null;
     function initAudio() {
@@ -213,7 +378,6 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // Synthesis Helpers
     function playTone(ctx, freq, type, time, duration, volume) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -272,7 +436,6 @@
       const vol = 0.3;
       
       switch(type) {
-        // Game SFX
         case 'launch': slideTone(ctx, 300, 100, 'sawtooth', now, 0.2, vol); playNoise(ctx, now, 0.1, 'lowpass', 800, 0.2); break;
         case 'impact': playNoise(ctx, now, 0.1, 'highpass', 1000, 0.5); playTone(ctx, 100, 'square', now, 0.05, 0.2); break;
         case 'break': playNoise(ctx, now, 0.2, 'bandpass', 1500, 0.6); break;
@@ -280,8 +443,6 @@
         case 'win': playArpeggio(ctx, [523.25, 659.25, 783.99, 1046.50, 1318.51], 'square', now, 0.15, vol); break;
         case 'fail': slideTone(ctx, 400, 100, 'sawtooth', now, 1.0, vol); break;
         case 'select': playTone(ctx, 1200, 'square', now, 0.05, 0.2); break;
-        
-        // Library SFX
         case 'coin_1': playTone(ctx, 987.77, 'square', now, 0.1, vol); playTone(ctx, 1318.51, 'square', now + 0.1, 0.2, vol); break;
         case 'coin_2': playTone(ctx, 1174.66, 'square', now, 0.1, vol); playTone(ctx, 1567.98, 'square', now + 0.1, 0.2, vol); break;
         case 'coin_3': playArpeggio(ctx, [987.77, 1174.66, 1318.51], 'square', now, 0.05, vol); break;
@@ -373,7 +534,7 @@
       return buffer;
     }
 
-    // --- DATA LAYER (Expanded) ---
+    // --- DATA LAYER ---
     const soundPacks = [
       { id: 1, title: "RPG Essentials", category: "RPG", color: "#29adff", sounds: [
         { name: "Coin (Classic)", type: "coin_1" }, { name: "Coin (High)", type: "coin_2" }, { name: "Coin (Fast)", type: "coin_3" },
@@ -509,94 +670,41 @@
     let gameLoop;
     let canvas, ctx;
 
-    // Slingshot State
     const slingPos = { x: 120, y: 400 };
     let isDragging = false;
     let dragBody = null;
     let dragPos = { x: 0, y: 0 };
 
     const levels = [
-      // Level 1
       { blocks: [{ x: 600, y: 455, w: 60, h: 30 }, { x: 600, y: 415, w: 60, h: 30 }], creatures: [{ x: 600, y: 385 }] },
-      // Level 2
       { blocks: [{ x: 580, y: 455, w: 30, h: 60 }, { x: 660, y: 455, w: 30, h: 60 }, { x: 620, y: 410, w: 100, h: 20 }], creatures: [{ x: 620, y: 385 }, { x: 620, y: 455 }] },
-      // Level 3
       { blocks: [{ x: 550, y: 440, w: 20, h: 90 }, { x: 700, y: 440, w: 20, h: 90 }, { x: 625, y: 375, w: 170, h: 20 }, { x: 625, y: 355, w: 60, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 650, y: 455 }, { x: 625, y: 330 }] },
-      // Level 4
       { blocks: [{ x: 550, y: 440, w: 20, h: 60 }, { x: 650, y: 440, w: 20, h: 60 }, { x: 600, y: 395, w: 120, h: 20 }, { x: 600, y: 375, w: 20, h: 60 }, { x: 600, y: 330, w: 80, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 600, y: 300 }, { x: 550, y: 395 }] },
-      // Level 5
       { blocks: [{ x: 500, y: 430, w: 20, h: 100 }, { x: 600, y: 430, w: 20, h: 100 }, { x: 550, y: 365, w: 120, h: 20 }, { x: 550, y: 345, w: 20, h: 60 }, { x: 750, y: 455, w: 60, h: 30 }, { x: 750, y: 420, w: 20, h: 40 }], creatures: [{ x: 550, y: 305 }, { x: 500, y: 455 }, { x: 600, y: 455 }, { x: 750, y: 385 }, { x: 750, y: 455 }] },
-      // Level 6: The Tunnel
-      { 
-        blocks: [
-          { x: 500, y: 420, w: 20, h: 100 }, { x: 700, y: 420, w: 20, h: 100 }, { x: 600, y: 355, w: 220, h: 20 }, { x: 600, y: 455, w: 40, h: 30 }
-        ], 
-        creatures: [{ x: 550, y: 420 }, { x: 650, y: 420 }, { x: 600, y: 320 }] 
-      },
-      // Level 7: High Tower
-      { 
-        blocks: [
-          { x: 650, y: 420, w: 60, h: 120 }, { x: 650, y: 340, w: 40, h: 40 }, { x: 650, y: 290, w: 60, h: 20 }, { x: 650, y: 260, w: 20, h: 40 }
-        ], 
-        creatures: [{ x: 650, y: 455 }, { x: 650, y: 310 }, { x: 650, y: 220 }] 
-      },
-      // Level 8: Twin Towers
-      { 
-        blocks: [
-          { x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 },
-          { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 },
-          { x: 630, y: 380, w: 60, h: 20 }
-        ], 
-        creatures: [{ x: 530, y: 455 }, { x: 730, y: 455 }, { x: 530, y: 320 }, { x: 730, y: 320 }] 
-      },
-      // Level 9: The Fortress
-      { 
-        blocks: [
-          { x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, { x: 600, y: 315, w: 220, h: 20 },
-          { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }
-        ], 
-        creatures: [{ x: 550, y: 395 }, { x: 650, y: 395 }, { x: 600, y: 280 }, { x: 600, y: 455 }] 
-      },
-      // Level 10: Final Castle
-      { 
-        blocks: [
-          { x: 450, y: 400, w: 30, h: 140 }, { x: 750, y: 400, w: 30, h: 140 },
-          { x: 550, y: 430, w: 20, h: 80 }, { x: 650, y: 430, w: 20, h: 80 },
-          { x: 600, y: 375, w: 220, h: 20 },
-          { x: 500, y: 310, w: 40, h: 80 }, { x: 700, y: 310, w: 40, h: 80 },
-          { x: 600, y: 300, w: 20, h: 100 }, { x: 600, y: 240, w: 120, h: 20 }
-        ], 
-        creatures: [{ x: 450, y: 315 }, { x: 750, y: 315 }, { x: 600, y: 455 }, { x: 600, y: 200 }, { x: 550, y: 340 }, { x: 650, y: 340 }] 
-      }
+      { blocks: [{ x: 500, y: 420, w: 20, h: 100 }, { x: 700, y: 420, w: 20, h: 100 }, { x: 600, y: 355, w: 220, h: 20 }, { x: 600, y: 455, w: 40, h: 30 }], creatures: [{ x: 550, y: 420 }, { x: 650, y: 420 }, { x: 600, y: 320 }] },
+      { blocks: [{ x: 650, y: 420, w: 60, h: 120 }, { x: 650, y: 340, w: 40, h: 40 }, { x: 650, y: 290, w: 60, h: 20 }, { x: 650, y: 260, w: 20, h: 40 }], creatures: [{ x: 650, y: 455 }, { x: 650, y: 310 }, { x: 650, y: 220 }] },
+      { blocks: [{ x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 }, { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 }, { x: 630, y: 380, w: 60, h: 20 }], creatures: [{ x: 530, y: 455 }, { x: 730, y: 455 }, { x: 530, y: 320 }, { x: 730, y: 320 }] },
+      { blocks: [{ x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, { x: 600, y: 315, w: 220, h: 20 }, { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }], creatures: [{ x: 550, y: 395 }, { x: 650, y: 395 }, { x: 600, y: 280 }, { x: 600, y: 455 }] },
+      { blocks: [{ x: 450, y: 400, w: 30, h: 140 }, { x: 750, y: 400, w: 30, h: 140 }, { x: 550, y: 430, w: 20, h: 80 }, { x: 650, y: 430, w: 20, h: 80 }, { x: 600, y: 375, w: 220, h: 20 }, { x: 500, y: 310, w: 40, h: 80 }, { x: 700, y: 310, w: 40, h: 80 }, { x: 600, y: 300, w: 20, h: 100 }, { x: 600, y: 240, w: 120, h: 20 }], creatures: [{ x: 450, y: 315 }, { x: 750, y: 315 }, { x: 600, y: 455 }, { x: 600, y: 200 }, { x: 550, y: 340 }, { x: 650, y: 340 }] }
     ];
 
     function initGame() {
       if (engine) { Runner.stop(runner); Composite.clear(engine.world); }
-      
       canvas = document.getElementById('game-canvas');
       ctx = canvas.getContext('2d');
-      
       engine = Engine.create();
       engine.world.gravity.y = 1.5;
-      
       runner = Runner.create();
       Runner.run(runner, engine);
-
-      // Ground
       const ground = Bodies.rectangle(400, 510, 820, 60, { isStatic: true, label: 'ground', friction: 1 });
       Composite.add(engine.world, ground);
-
       Events.on(engine, 'collisionStart', handleCollision);
       loadLevel(currentLevel);
-      
       if(gameLoop) cancelAnimationFrame(gameLoop);
       renderLoop();
-      
-      // Unified Input Handling
       canvas.onmousedown = (e) => startDrag(e.clientX, e.clientY);
       canvas.onmousemove = (e) => moveDrag(e.clientX, e.clientY);
       canvas.onmouseup = endDrag;
-      
       canvas.ontouchstart = (e) => { e.preventDefault(); const t=e.touches[0]; startDrag(t.clientX, t.clientY); };
       canvas.ontouchmove = (e) => { e.preventDefault(); const t=e.touches[0]; moveDrag(t.clientX, t.clientY); };
       canvas.ontouchend = endDrag;
@@ -604,27 +712,20 @@
 
     function loadLevel(levelIndex) {
       creatures = []; blocks = []; projectiles = []; shotsLeft = 3;
-      
       const ground = engine.world.bodies.find(b => b.label === 'ground');
       Composite.clear(engine.world);
       Composite.add(engine.world, ground);
-
       const levelData = levels[levelIndex];
-      
       levelData.blocks.forEach(s => {
-        const body = Bodies.rectangle(s.x, s.y, s.w, s.h, {
-          label: 'block', restitution: 0.1, friction: 0.9, customWidth: s.w, customHeight: s.h, health: 2, render: { fillStyle: '#7d8594' }
-        });
+        const body = Bodies.rectangle(s.x, s.y, s.w, s.h, { label: 'block', restitution: 0.1, friction: 0.9, customWidth: s.w, customHeight: s.h, health: 2, render: { fillStyle: '#7d8594' } });
         blocks.push(body);
         Composite.add(engine.world, body);
       });
-
       levelData.creatures.forEach(c => {
         const creature = Bodies.circle(c.x, c.y, 14, { label: 'creature', restitution: 0.2, friction: 0.5, customRadius: 14 });
         creatures.push(creature);
         Composite.add(engine.world, creature);
       });
-
       updateUI();
       document.getElementById('game-message').style.display = 'none';
       playSound('select');
@@ -637,239 +738,39 @@
         let projectile = bodies.find(b => b.label === 'projectile');
         let block = bodies.find(b => b.label === 'block');
         let ground = bodies.find(b => b.label === 'ground');
-
         if (creature && projectile) killCreature(creature);
-        if (creature && block) {
-           const speed = Math.sqrt(Math.pow(block.velocity.x, 2) + Math.pow(block.velocity.y, 2));
-           if (speed > 2) killCreature(creature);
-        }
-        if (projectile && block) {
-          const speed = Math.sqrt(Math.pow(projectile.velocity.x, 2) + Math.pow(projectile.velocity.y, 2));
-          if (speed > 2) {
-            block.health--;
-            playSound('impact');
-            if (block.health <= 0) { playSound('break'); Composite.remove(engine.world, block); blocks = blocks.filter(b => b.id !== block.id); }
-          }
-        }
-        if (creature && ground) {
-           const speed = Math.abs(creature.velocity.y);
-           if (speed > 10) killCreature(creature);
-        }
+        if (creature && block) { const speed = Math.sqrt(Math.pow(block.velocity.x, 2) + Math.pow(block.velocity.y, 2)); if (speed > 2) killCreature(creature); }
+        if (projectile && block) { const speed = Math.sqrt(Math.pow(projectile.velocity.x, 2) + Math.pow(projectile.velocity.y, 2)); if (speed > 2) { block.health--; playSound('impact'); if (block.health <= 0) { playSound('break'); Composite.remove(engine.world, block); blocks = blocks.filter(b => b.id !== block.id); } } }
+        if (creature && ground) { const speed = Math.abs(creature.velocity.y); if (speed > 10) killCreature(creature); }
       });
     }
 
-    function killCreature(creature) {
-        if (Composite.get(engine.world, creature.id, 'body')) {
-            playSound('die'); score += 100;
-            Composite.remove(engine.world, creature);
-            creatures = creatures.filter(c => c.id !== creature.id);
-            updateUI();
-            setTimeout(checkGameStatus, 500);
-        }
-    }
+    function killCreature(creature) { if (Composite.get(engine.world, creature.id, 'body')) { playSound('die'); score += 100; Composite.remove(engine.world, creature); creatures = creatures.filter(c => c.id !== creature.id); updateUI(); setTimeout(checkGameStatus, 500); } }
 
-    // Input Helpers
-    function getCanvasCoords(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      return { 
-        x: (clientX - rect.left) * (canvas.width / rect.width), 
-        y: (clientY - rect.top) * (canvas.height / rect.height)
-      };
-    }
+    function getCanvasCoords(clientX, clientY) { const rect = canvas.getBoundingClientRect(); return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) }; }
+    function startDrag(clientX, clientY) { const {x, y} = getCanvasCoords(clientX, clientY); if (shotsLeft > 0 && Math.hypot(x - slingPos.x, y - slingPos.y) < 60) { isDragging = true; dragBody = Bodies.circle(slingPos.x, slingPos.y, 10, { label: 'projectile', restitution: 0.3, friction: 0.5, frictionAir: 0.01, density: 0.006, customRadius: 10, isStatic: true }); Composite.add(engine.world, dragBody); projectiles.push(dragBody); dragPos = { x, y }; } }
+    function moveDrag(clientX, clientY) { if (!isDragging) return; const {x, y} = getCanvasCoords(clientX, clientY); const dist = Math.hypot(x - slingPos.x, y - slingPos.y); const maxDist = 90; if (dist > maxDist) { const angle = Math.atan2(y - slingPos.y, x - slingPos.x); dragPos.x = slingPos.x + Math.cos(angle) * maxDist; dragPos.y = slingPos.y + Math.sin(angle) * maxDist; } else { dragPos.x = x; dragPos.y = y; } if(dragBody) Body.setPosition(dragBody, dragPos); }
+    function endDrag() { if (!isDragging || !dragBody) return; isDragging = false; const dx = slingPos.x - dragPos.x; const dy = slingPos.y - dragPos.y; Body.setStatic(dragBody, false); Body.setVelocity(dragBody, { x: dx * 0.25, y: dy * 0.25 }); playSound('launch'); dragBody = null; shotsLeft--; updateUI(); setTimeout(checkGameStatus, 2500); }
 
-    function startDrag(clientX, clientY) {
-      const {x, y} = getCanvasCoords(clientX, clientY);
-      if (shotsLeft > 0 && Math.hypot(x - slingPos.x, y - slingPos.y) < 60) {
-        isDragging = true;
-        dragBody = Bodies.circle(slingPos.x, slingPos.y, 10, { label: 'projectile', restitution: 0.3, friction: 0.5, frictionAir: 0.01, density: 0.006, customRadius: 10, isStatic: true });
-        Composite.add(engine.world, dragBody);
-        projectiles.push(dragBody);
-        dragPos = { x, y };
-      }
-    }
-
-    function moveDrag(clientX, clientY) {
-      if (!isDragging) return;
-      const {x, y} = getCanvasCoords(clientX, clientY);
-      const dist = Math.hypot(x - slingPos.x, y - slingPos.y);
-      const maxDist = 90;
-      
-      if (dist > maxDist) {
-        const angle = Math.atan2(y - slingPos.y, x - slingPos.x);
-        dragPos.x = slingPos.x + Math.cos(angle) * maxDist;
-        dragPos.y = slingPos.y + Math.sin(angle) * maxDist;
-      } else {
-        dragPos.x = x;
-        dragPos.y = y;
-      }
-      if(dragBody) Body.setPosition(dragBody, dragPos);
-    }
-
-    function endDrag() {
-      if (!isDragging || !dragBody) return;
-      isDragging = false;
-      
-      const dx = slingPos.x - dragPos.x;
-      const dy = slingPos.y - dragPos.y;
-      
-      Body.setStatic(dragBody, false);
-      Body.setVelocity(dragBody, { x: dx * 0.25, y: dy * 0.25 });
-      
-      playSound('launch');
-      
-      dragBody = null;
-      shotsLeft--;
-      updateUI();
-      
-      setTimeout(checkGameStatus, 2500);
-    }
-
-    function checkGameStatus() {
-      if (isDragging || document.getElementById('game-message').style.display === 'flex') return;
-      if (creatures.length === 0) levelWin();
-      else if (shotsLeft === 0) levelFail();
-    }
-
-    function levelWin() {
-      playSound('win'); currentLevel++;
-      if (currentLevel >= levels.length) {
-        showMessage("YOU WIN!");
-        document.getElementById('next-level-btn').textContent = "PLAY AGAIN";
-        document.getElementById('next-level-btn').onclick = () => { currentLevel = 0; score = 0; loadLevel(currentLevel); };
-      } else {
-        showMessage("LEVEL COMPLETE!");
-        document.getElementById('next-level-btn').textContent = "NEXT";
-        document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel);
-      }
-    }
-
-    function levelFail() {
-      playSound('fail');
-      showMessage("LEVEL FAILED");
-      document.getElementById('next-level-btn').textContent = "RETRY";
-      document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel);
-    }
-
-    function showMessage(text) {
-      document.getElementById('msg-text').textContent = text;
-      document.getElementById('game-message').style.display = 'flex';
-    }
-
-    function updateUI() {
-      document.getElementById('level-display').textContent = currentLevel + 1;
-      document.getElementById('score-display').textContent = score;
-      document.getElementById('shots-display').textContent = shotsLeft;
-    }
+    function checkGameStatus() { if (isDragging || document.getElementById('game-message').style.display === 'flex') return; if (creatures.length === 0) levelWin(); else if (shotsLeft === 0) levelFail(); }
+    function levelWin() { playSound('win'); currentLevel++; if (currentLevel >= levels.length) { showMessage("YOU WIN!"); document.getElementById('next-level-btn').textContent = "PLAY AGAIN"; document.getElementById('next-level-btn').onclick = () => { currentLevel = 0; score = 0; loadLevel(currentLevel); }; } else { showMessage("LEVEL COMPLETE!"); document.getElementById('next-level-btn').textContent = "NEXT"; document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel); } }
+    function levelFail() { playSound('fail'); showMessage("LEVEL FAILED"); document.getElementById('next-level-btn').textContent = "RETRY"; document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel); }
+    function showMessage(text) { document.getElementById('msg-text').textContent = text; document.getElementById('game-message').style.display = 'flex'; }
+    function updateUI() { document.getElementById('level-display').textContent = currentLevel + 1; document.getElementById('score-display').textContent = score; document.getElementById('shots-display').textContent = shotsLeft; }
 
     // --- RENDERER ---
     function renderLoop() {
-      ctx.fillStyle = '#262b44';
-      ctx.fillRect(0, 0, 800, 500);
-
-      // Grid
-      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-      ctx.lineWidth = 1;
-      for(let i=0; i<800; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,500); ctx.stroke(); }
-      for(let i=0; i<500; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(800,i); ctx.stroke(); }
-
+      ctx.fillStyle = '#262b44'; ctx.fillRect(0, 0, 800, 500);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; for(let i=0; i<800; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,500); ctx.stroke(); } for(let i=0; i<500; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(800,i); ctx.stroke(); }
       drawSlingshot();
-
-      // Trajectory
-      if (isDragging) {
-        const dx = slingPos.x - dragPos.x;
-        const dy = slingPos.y - dragPos.y;
-        const vx = dx * 0.25;
-        const vy = dy * 0.25;
-        let x = slingPos.x, y = slingPos.y, t_vy = vy;
-        
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        for (let i = 0; i < 30; i++) {
-            ctx.fillRect(x, y, 4, 4);
-            x += vx * 0.1; t_vy += 0.15; y += t_vy * 0.1;
-            if (y > 500) break;
-        }
-        ctx.strokeStyle = '#ff6c24';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(slingPos.x - 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y);
-        ctx.moveTo(slingPos.x + 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y);
-        ctx.stroke();
-      }
-
-      // Blocks
-      blocks.forEach(b => {
-        if (!Composite.get(engine.world, b.id, 'body')) return;
-        ctx.save();
-        ctx.translate(b.position.x, b.position.y);
-        ctx.rotate(b.angle);
-        ctx.fillStyle = b.health < 2 ? '#ffffff' : '#7d8594';
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.fillRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight);
-        ctx.strokeRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight);
-        ctx.restore();
-      });
-
-      // Creatures
-      creatures.forEach(c => {
-        if (!Composite.get(engine.world, c.id, 'body')) return;
-        ctx.save();
-        ctx.translate(c.position.x, c.position.y);
-        ctx.rotate(c.angle);
-        ctx.fillStyle = '#ff004d'; 
-        ctx.beginPath();
-        ctx.arc(0, 0, c.customRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(-6, -4, 4, 4); ctx.fillRect(2, -4, 4, 4);
-        ctx.fillRect(-4, 4, 8, 2); 
-        ctx.restore();
-      });
-
-      // Projectiles
-      projectiles.forEach(p => {
-        if (!Composite.get(engine.world, p.id, 'body')) return;
-        ctx.save();
-        ctx.translate(p.position.x, p.position.y);
-        ctx.rotate(p.angle);
-        ctx.fillStyle = '#29adff'; 
-        ctx.beginPath();
-        ctx.arc(0, 0, p.customRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(-5, -3, 3, 3); ctx.fillRect(2, -3, 3, 3);
-        ctx.restore();
-      });
-
+      if (isDragging) { const dx = slingPos.x - dragPos.x; const dy = slingPos.y - dragPos.y; const vx = dx * 0.25; const vy = dy * 0.25; let x = slingPos.x, y = slingPos.y, t_vy = vy; ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'; for (let i = 0; i < 30; i++) { ctx.fillRect(x, y, 4, 4); x += vx * 0.1; t_vy += 0.15; y += t_vy * 0.1; if (y > 500) break; } ctx.strokeStyle = '#ff6c24'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(slingPos.x - 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y); ctx.moveTo(slingPos.x + 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y); ctx.stroke(); }
+      blocks.forEach(b => { if (!Composite.get(engine.world, b.id, 'body')) return; ctx.save(); ctx.translate(b.position.x, b.position.y); ctx.rotate(b.angle); ctx.fillStyle = b.health < 2 ? '#ffffff' : '#7d8594'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.fillRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight); ctx.strokeRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight); ctx.restore(); });
+      creatures.forEach(c => { if (!Composite.get(engine.world, c.id, 'body')) return; ctx.save(); ctx.translate(c.position.x, c.position.y); ctx.rotate(c.angle); ctx.fillStyle = '#ff004d'; ctx.beginPath(); ctx.arc(0, 0, c.customRadius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.fillRect(-6, -4, 4, 4); ctx.fillRect(2, -4, 4, 4); ctx.fillRect(-4, 4, 8, 2); ctx.restore(); });
+      projectiles.forEach(p => { if (!Composite.get(engine.world, p.id, 'body')) return; ctx.save(); ctx.translate(p.position.x, p.position.y); ctx.rotate(p.angle); ctx.fillStyle = '#29adff'; ctx.beginPath(); ctx.arc(0, 0, p.customRadius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.fillRect(-5, -3, 3, 3); ctx.fillRect(2, -3, 3, 3); ctx.restore(); });
       gameLoop = requestAnimationFrame(renderLoop);
     }
 
-    function drawSlingshot() {
-      ctx.fillStyle = '#5f574f'; 
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 2;
-      ctx.fillRect(slingPos.x - 20, slingPos.y, 40, 80);
-      ctx.strokeRect(slingPos.x - 20, slingPos.y, 40, 80);
-      ctx.fillStyle = '#7d8594';
-      ctx.beginPath();
-      ctx.moveTo(slingPos.x - 15, slingPos.y);
-      ctx.lineTo(slingPos.x - 25, slingPos.y - 40);
-      ctx.lineTo(slingPos.x - 15, slingPos.y - 40);
-      ctx.lineTo(slingPos.x - 5, slingPos.y);
-      ctx.fill(); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(slingPos.x + 15, slingPos.y);
-      ctx.lineTo(slingPos.x + 25, slingPos.y - 40);
-      ctx.lineTo(slingPos.x + 15, slingPos.y - 40);
-      ctx.lineTo(slingPos.x + 5, slingPos.y);
-      ctx.fill(); ctx.stroke();
-    }
+    function drawSlingshot() { ctx.fillStyle = '#5f574f'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.fillRect(slingPos.x - 20, slingPos.y, 40, 80); ctx.strokeRect(slingPos.x - 20, slingPos.y, 40, 80); ctx.fillStyle = '#7d8594'; ctx.beginPath(); ctx.moveTo(slingPos.x - 15, slingPos.y); ctx.lineTo(slingPos.x - 25, slingPos.y - 40); ctx.lineTo(slingPos.x - 15, slingPos.y - 40); ctx.lineTo(slingPos.x - 5, slingPos.y); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(slingPos.x + 15, slingPos.y); ctx.lineTo(slingPos.x + 25, slingPos.y - 40); ctx.lineTo(slingPos.x + 15, slingPos.y - 40); ctx.lineTo(slingPos.x + 5, slingPos.y); ctx.fill(); ctx.stroke(); }
 
     document.getElementById('restart-level').addEventListener('click', () => loadLevel(currentLevel));
 
