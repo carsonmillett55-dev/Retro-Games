@@ -124,7 +124,7 @@
           <span class="text-[var(--accent)]">SOUND FX</span>
         </h1>
         <p class="text-[var(--muted)] max-w-xl mx-auto mb-10 text-[10px] md:text-xs leading-relaxed">
-          High-quality 8-bit sound effects. Perfect for platformers, RPGs, and arcade games. Download individual .WAV files or grab a pack.
+          The largest free 8-bit sound library on the web. High-quality procedural audio for indie devs. Download individual .WAV files or grab a pack.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <button onclick="document.getElementById('library').scrollIntoView({behavior: 'smooth'})" class="btn-primary text-[10px] px-8 py-4 inline-flex">
@@ -137,7 +137,7 @@
       </div>
     </header>
 
-    <!-- AD SLOT 1 (Your specific ID) -->
+    <!-- AD SLOT 1 -->
     <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
       <ins class="adsbygoogle"
            style="display:block"
@@ -158,7 +158,7 @@
       </div>
     </section>
 
-    <!-- AD SLOT 2 (Your specific ID) -->
+    <!-- AD SLOT 2 -->
     <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
         <ins class="adsbygoogle"
              style="display:block"
@@ -323,7 +323,6 @@
             body: `
                 <p>Have questions or feedback? Send us a message below.</p>
                 <form action="https://formsubmit.co/driveyourtest@gmail.com" method="POST" class="mt-4 space-y-4">
-                    <!-- Formsubmit Configuration -->
                     <input type="hidden" name="_subject" value="New Contact Form Submission">
                     <input type="text" name="_honey" style="display:none">
                     <input type="hidden" name="_captcha" value="false">
@@ -429,13 +428,42 @@
       noise.start(time);
       noise.stop(time + duration);
     }
+
+    // Helper for more complex sounds
+    function playFM(ctx, carrierFreq, modFreq, modIndex, time, duration, volume) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const mod = ctx.createOscillator();
+        const modGain = ctx.createGain();
+        
+        osc.type = 'sine';
+        mod.type = 'sine';
+        
+        osc.frequency.value = carrierFreq;
+        mod.frequency.value = modFreq;
+        modGain.gain.value = carrierFreq * modIndex;
+        
+        mod.connect(modGain);
+        modGain.connect(osc.frequency);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        
+        osc.start(time);
+        mod.start(time);
+        osc.stop(time + duration);
+        mod.stop(time + duration);
+    }
     
-    // Master Sound Router
+    // MASTER SOUND ROUTER (EXPANDED)
     function renderSound(type, ctx, time = 0) {
       const now = time;
       const vol = 0.3;
       
       switch(type) {
+        // --- GAME SFX ---
         case 'launch': slideTone(ctx, 300, 100, 'sawtooth', now, 0.2, vol); playNoise(ctx, now, 0.1, 'lowpass', 800, 0.2); break;
         case 'impact': playNoise(ctx, now, 0.1, 'highpass', 1000, 0.5); playTone(ctx, 100, 'square', now, 0.05, 0.2); break;
         case 'break': playNoise(ctx, now, 0.2, 'bandpass', 1500, 0.6); break;
@@ -443,36 +471,148 @@
         case 'win': playArpeggio(ctx, [523.25, 659.25, 783.99, 1046.50, 1318.51], 'square', now, 0.15, vol); break;
         case 'fail': slideTone(ctx, 400, 100, 'sawtooth', now, 1.0, vol); break;
         case 'select': playTone(ctx, 1200, 'square', now, 0.05, 0.2); break;
+
+        // --- RPG ESSENTIALS ---
         case 'coin_1': playTone(ctx, 987.77, 'square', now, 0.1, vol); playTone(ctx, 1318.51, 'square', now + 0.1, 0.2, vol); break;
         case 'coin_2': playTone(ctx, 1174.66, 'square', now, 0.1, vol); playTone(ctx, 1567.98, 'square', now + 0.1, 0.2, vol); break;
         case 'coin_3': playArpeggio(ctx, [987.77, 1174.66, 1318.51], 'square', now, 0.05, vol); break;
+        case 'coin_4': playTone(ctx, 800, 'triangle', now, 0.05, vol); playTone(ctx, 1200, 'triangle', now + 0.05, 0.1, vol); break;
+        case 'coin_5': slideTone(ctx, 1500, 2000, 'square', now, 0.1, vol); break;
+        case 'coin_6': playArpeggio(ctx, [600, 800, 1000, 1200], 'sine', now, 0.03, vol); break;
         case 'powerup_1': [523.25, 659.25, 783.99, 1046.50].forEach((n,i) => playTone(ctx, n, 'square', now + i*0.08, 0.08, vol)); break;
         case 'powerup_2': slideTone(ctx, 200, 1000, 'sawtooth', now, 0.5, vol); break;
         case 'powerup_3': playArpeggio(ctx, [261.63, 329.63, 392.00, 523.25, 659.25, 783.99], 'square', now, 0.05, vol); break;
-        case 'sword_1': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.4); slideTone(ctx, 800, 400, 'sawtooth', now, 0.1, 0.2); break;
-        case 'sword_2': playNoise(ctx, now, 0.15, 'highpass', 1500, 0.3); break;
-        case 'sword_3': playTone(ctx, 150, 'square', now, 0.1, vol); playNoise(ctx, now, 0.1, 'bandpass', 3000, 0.2); break;
+        case 'powerup_4': slideTone(ctx, 100, 800, 'triangle', now, 0.6, vol); break;
+        case 'powerup_5': playArpeggio(ctx, [400, 500, 600, 700, 800, 900, 1000], 'square', now, 0.04, vol); break;
+        case 'key_1': playTone(ctx, 800, 'sine', now, 0.1, vol); playTone(ctx, 1200, 'sine', now + 0.15, 0.1, vol); playTone(ctx, 1600, 'sine', now + 0.3, 0.15, vol); break;
+        case 'key_2': slideTone(ctx, 600, 1200, 'sine', now, 0.2, vol); break;
+        case 'chest_open': playNoise(ctx, now, 0.2, 'lowpass', 800, 0.2); slideTone(ctx, 300, 600, 'triangle', now, 0.2, vol); break;
+        case 'save': playTone(ctx, 600, 'square', now, 0.1, vol); playTone(ctx, 600, 'square', now + 0.2, 0.1, vol); playTone(ctx, 900, 'square', now + 0.4, 0.2, vol); break;
+        case 'heal_1': slideTone(ctx, 400, 800, 'sine', now, 0.3, vol); break;
+        case 'heal_2': playArpeggio(ctx, [400, 500, 600, 700], 'sine', now, 0.1, 0.2); break;
+        case 'item_get': playTone(ctx, 500, 'square', now, 0.1, vol); playTone(ctx, 700, 'square', now + 0.1, 0.1, vol); playTone(ctx, 900, 'square', now + 0.2, 0.2, vol); break;
+        case 'secret': playNoise(ctx, now, 0.5, 'bandpass', 1500, 0.3); slideTone(ctx, 1500, 500, 'sine', now, 0.5, 0.2); break;
+        case 'level_up': playArpeggio(ctx, [400, 500, 600, 800, 1000], 'square', now, 0.15, vol); break;
+
+        // --- PHYSICS & IMPACTS ---
         case 'hit_1': playNoise(ctx, now, 0.1, 'highpass', 2000, 0.5); break;
         case 'hit_2': playTone(ctx, 200, 'square', now, 0.1, vol); break;
         case 'hit_3': playNoise(ctx, now, 0.2, 'lowpass', 1000, 0.5); break;
+        case 'hit_4': playTone(ctx, 100, 'sawtooth', now, 0.05, vol); playNoise(ctx, now, 0.05, 'highpass', 3000, 0.3); break;
+        case 'hit_5': playTone(ctx, 80, 'square', now, 0.15, vol); break;
+        case 'hit_6': playNoise(ctx, now, 0.15, 'bandpass', 600, 0.6); break;
         case 'explosion_1': playNoise(ctx, now, 0.5, 'lowpass', 400, 0.8); playTone(ctx, 100, 'sawtooth', now, 0.4, 0.3); break;
         case 'explosion_2': playNoise(ctx, now, 0.7, 'lowpass', 200, 0.9); break;
+        case 'explosion_3': slideTone(ctx, 200, 20, 'sawtooth', now, 0.8, vol); playNoise(ctx, now, 0.8, 'lowpass', 300, 0.7); break;
+        case 'explosion_4': playNoise(ctx, now, 0.4, 'bandpass', 100, 0.8); break;
+        case 'break_glass': playNoise(ctx, now, 0.2, 'highpass', 3000, 0.6); break;
+        case 'break_wood': playNoise(ctx, now, 0.3, 'bandpass', 600, 0.6); break;
+        case 'break_stone': playNoise(ctx, now, 0.5, 'lowpass', 200, 0.7); playTone(ctx, 60, 'square', now, 0.2, 0.3); break;
+        case 'break_metal': playNoise(ctx, now, 0.4, 'bandpass', 1500, 0.6); playTone(ctx, 800, 'square', now, 0.1, 0.2); break;
+        case 'thud': playTone(ctx, 60, 'sine', now, 0.2, vol); break;
+        case 'splash': playNoise(ctx, now, 0.4, 'lowpass', 1000, 0.5); break;
+        case 'crunch': playNoise(ctx, now, 0.15, 'bandpass', 800, 0.7); break;
+        case 'bounce_1': slideTone(ctx, 400, 200, 'square', now, 0.1, vol); break;
+        case 'bounce_2': playTone(ctx, 300, 'triangle', now, 0.1, vol); break;
+
+        // --- PLAYER ACTIONS ---
         case 'jump_1': slideTone(ctx, 150, 400, 'square', now, 0.15, vol); break;
         case 'jump_2': slideTone(ctx, 200, 600, 'square', now, 0.2, vol); break;
         case 'jump_3': playTone(ctx, 300, 'triangle', now, 0.1, vol); playTone(ctx, 400, 'triangle', now+0.05, 0.1, vol); break;
-        case 'laser_1': slideTone(ctx, 800, 200, 'sawtooth', now, 0.2, vol); break;
-        case 'laser_2': slideTone(ctx, 1200, 100, 'square', now, 0.3, vol); break;
-        case 'laser_3': slideTone(ctx, 500, 1500, 'sine', now, 0.15, vol); break;
-        case 'magic_1': playNoise(ctx, now, 0.4, 'highpass', 3000, 0.3); playTone(ctx, 800, 'sine', now, 0.4, 0.2); break;
-        case 'magic_2': playArpeggio(ctx, [600, 800, 1000, 1200], 'sine', now, 0.1, vol); break;
-        case 'magic_3': slideTone(ctx, 1500, 300, 'sine', now, 0.6, vol); break;
+        case 'jump_4': slideTone(ctx, 250, 500, 'sawtooth', now, 0.12, vol); break;
+        case 'double_jump': playArpeggio(ctx, [300, 400], 'square', now, 0.05, vol); break;
+        case 'dash_1': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.3); slideTone(ctx, 400, 100, 'sawtooth', now, 0.1, vol); break;
+        case 'dash_2': playNoise(ctx, now, 0.15, 'highpass', 1500, 0.4); break;
+        case 'step_1': playNoise(ctx, now, 0.05, 'lowpass', 400, 0.3); playTone(ctx, 80, 'sine', now, 0.05, 0.1); break;
+        case 'step_2': playNoise(ctx, now, 0.05, 'bandpass', 300, 0.3); break;
+        case 'climb_1': playTone(ctx, 150, 'triangle', now, 0.05, 0.1); break;
+        case 'climb_2': playNoise(ctx, now, 0.08, 'bandpass', 600, 0.2); break;
+        case 'swim_1': playNoise(ctx, now, 0.2, 'lowpass', 600, 0.3); break;
+        case 'swim_2': playTone(ctx, 200, 'sine', now, 0.2, 0.1); playNoise(ctx, now, 0.2, 'lowpass', 800, 0.2); break;
+        case 'death_1': slideTone(ctx, 600, 50, 'square', now, 0.3, vol); break;
+        case 'death_2': slideTone(ctx, 800, 100, 'sawtooth', now, 0.5, vol); playNoise(ctx, now, 0.3, 'bandpass', 800, 0.3); break;
+        case 'hurt_1': playTone(ctx, 200, 'sawtooth', now, 0.1, vol); break;
+        case 'hurt_2': playNoise(ctx, now, 0.1, 'lowpass', 500, 0.4); break;
+        case 'land_1': playNoise(ctx, now, 0.1, 'lowpass', 300, 0.5); playTone(ctx, 60, 'sine', now, 0.1, 0.2); break;
+
+        // --- SYSTEM & UI ---
         case 'ui_select': playTone(ctx, 1200, 'square', now, 0.05, 0.2); break;
         case 'ui_confirm': playTone(ctx, 600, 'sine', now, 0.05, vol); playTone(ctx, 800, 'sine', now+0.05, 0.1, vol); break;
         case 'ui_cancel': playTone(ctx, 400, 'triangle', now, 0.1, vol); playTone(ctx, 200, 'triangle', now+0.1, 0.15, vol); break;
         case 'ui_error': playNoise(ctx, now, 0.1, 'bandpass', 500, 0.3); break;
-        case 'monster_bite': playNoise(ctx, now, 0.2, 'lowpass', 800, 0.5); playTone(ctx, 150, 'sawtooth', now, 0.1, vol); break;
-        case 'monster_growl': slideTone(ctx, 200, 50, 'sawtooth', now, 0.4, vol); break;
-        case 'monster_death': slideTone(ctx, 500, 50, 'square', now, 0.5, vol); playNoise(ctx, now, 0.3, 'bandpass', 1000, 0.3); break;
+        case 'ui_scroll_1': playTone(ctx, 800, 'triangle', now, 0.02, 0.1); break;
+        case 'ui_scroll_2': playTone(ctx, 600, 'square', now, 0.02, 0.1); break;
+        case 'ui_type_1': playTone(ctx, 1400, 'square', now, 0.01, 0.1); break;
+        case 'ui_type_2': playTone(ctx, 1000, 'square', now, 0.01, 0.1); break;
+        case 'ui_pause': playTone(ctx, 500, 'square', now, 0.1, vol); playTone(ctx, 500, 'square', now + 0.15, 0.1, vol); break;
+        case 'ui_unpause': playTone(ctx, 600, 'square', now, 0.1, vol); playTone(ctx, 800, 'square', now + 0.1, 0.1, vol); break;
+        case 'ui_popup': slideTone(ctx, 300, 600, 'square', now, 0.1, vol); break;
+        case 'ui_close': slideTone(ctx, 600, 300, 'square', now, 0.1, vol); break;
+        case 'ui_achievement': playArpeggio(ctx, [600, 800, 1000, 1200], 'square', now, 0.1, vol); break;
+        case 'ui_switch': playTone(ctx, 900, 'square', now, 0.03, 0.15); break;
+        case 'ui_slider': playTone(ctx, 500 + (Math.random()*200), 'triangle', now, 0.03, 0.1); break;
+
+        // --- FANTASY COMBAT ---
+        case 'sword_1': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.4); slideTone(ctx, 800, 400, 'sawtooth', now, 0.1, 0.2); break;
+        case 'sword_2': playNoise(ctx, now, 0.15, 'highpass', 1500, 0.3); break;
+        case 'sword_3': playTone(ctx, 150, 'square', now, 0.1, vol); playNoise(ctx, now, 0.1, 'bandpass', 3000, 0.2); break;
+        case 'sword_4': slideTone(ctx, 600, 100, 'sawtooth', now, 0.15, vol); break;
+        case 'sword_5': playNoise(ctx, now, 0.1, 'bandpass', 2500, 0.5); playTone(ctx, 200, 'triangle', now, 0.05, 0.2); break;
+        case 'arrow_1': slideTone(ctx, 800, 200, 'sawtooth', now, 0.15, vol); playNoise(ctx, now, 0.1, 'bandpass', 1000, 0.2); break;
+        case 'arrow_2': playNoise(ctx, now, 0.15, 'bandpass', 1500, 0.3); break;
+        case 'magic_cast_1': playNoise(ctx, now, 0.4, 'highpass', 3000, 0.3); playTone(ctx, 800, 'sine', now, 0.4, 0.2); break;
+        case 'magic_cast_2': playArpeggio(ctx, [600, 800, 1000, 1200], 'sine', now, 0.1, vol); break;
+        case 'magic_cast_3': slideTone(ctx, 1500, 300, 'sine', now, 0.6, vol); break;
+        case 'magic_fire': playNoise(ctx, now, 0.4, 'bandpass', 400, 0.6); slideTone(ctx, 200, 800, 'sawtooth', now, 0.4, 0.2); break;
+        case 'magic_ice': playNoise(ctx, now, 0.3, 'highpass', 4000, 0.4); slideTone(ctx, 2000, 1000, 'sine', now, 0.4, vol); break;
+        case 'magic_lightning': playNoise(ctx, now, 0.2, 'highpass', 2000, 0.6); playTone(ctx, 100, 'square', now, 0.2, 0.3); break;
+        case 'shield_1': playNoise(ctx, now, 0.2, 'highpass', 1500, 0.3); playTone(ctx, 400, 'triangle', now, 0.1, vol); break;
+        case 'shield_2': playTone(ctx, 500, 'sine', now, 0.1, vol); playTone(ctx, 700, 'sine', now + 0.05, 0.1, vol); break;
+        case 'block_metal': playNoise(ctx, now, 0.15, 'bandpass', 2500, 0.5); playTone(ctx, 600, 'square', now, 0.05, 0.2); break;
+
+        // --- SCI-FI TECH ---
+        case 'laser_1': slideTone(ctx, 800, 200, 'sawtooth', now, 0.2, vol); break;
+        case 'laser_2': slideTone(ctx, 1200, 100, 'square', now, 0.3, vol); break;
+        case 'laser_3': slideTone(ctx, 500, 1500, 'sine', now, 0.15, vol); break;
+        case 'laser_4': slideTone(ctx, 1500, 200, 'sawtooth', now, 0.15, vol); break;
+        case 'laser_5': playTone(ctx, 1200, 'square', now, 0.1, vol); playNoise(ctx, now, 0.1, 'bandpass', 3000, 0.2); break;
+        case 'engine_hum': playTone(ctx, 80, 'sawtooth', now, 0.5, 0.1); playTone(ctx, 82, 'sawtooth', now, 0.5, 0.1); break; // Slight detune for hum
+        case 'engine_start': slideTone(ctx, 50, 200, 'sawtooth', now, 0.8, 0.2); break;
+        case 'engine_stop': slideTone(ctx, 200, 50, 'sawtooth', now, 0.5, 0.2); break;
+        case 'teleport_1': slideTone(ctx, 1500, 100, 'sine', now, 0.5, vol); playNoise(ctx, now, 0.4, 'highpass', 2000, 0.3); break;
+        case 'teleport_2': playArpeggio(ctx, [1500, 1200, 900, 600, 300], 'sine', now, 0.08, vol); break;
+        case 'forcefield': playNoise(ctx, now, 0.5, 'bandpass', 1000, 0.4); playTone(ctx, 200, 'sine', now, 0.5, 0.2); break;
+        case 'alarm_1': playTone(ctx, 800, 'square', now, 0.2, vol); playTone(ctx, 600, 'square', now + 0.2, 0.2, vol); break;
+        case 'alarm_2': playTone(ctx, 1000, 'square', now, 0.1, vol); break;
+        case 'door_1': playNoise(ctx, now, 0.4, 'bandpass', 600, 0.4); slideTone(ctx, 300, 600, 'square', now, 0.4, 0.2); break;
+        case 'door_2': playTone(ctx, 200, 'triangle', now, 0.3, vol); break;
+        case 'scan': playArpeggio(ctx, [1000, 1200, 1400, 1600, 1800], 'sine', now, 0.1, 0.2); break;
+
+        // --- HORROR & ATMOSPHERE ---
+        case 'horror_1': playNoise(ctx, now, 1.0, 'lowpass', 200, 0.4); slideTone(ctx, 100, 50, 'sawtooth', now, 1.0, 0.2); break;
+        case 'horror_2': playNoise(ctx, now, 0.8, 'bandpass', 300, 0.5); break;
+        case 'horror_3': slideTone(ctx, 200, 100, 'sine', now, 1.0, vol); break;
+        case 'horror_sting': playNoise(ctx, now, 0.3, 'highpass', 2000, 0.7); playTone(ctx, 100, 'square', now, 0.3, 0.4); break;
+        case 'ghost_1': slideTone(ctx, 800, 200, 'sine', now, 0.8, vol); playNoise(ctx, now, 0.6, 'bandpass', 1200, 0.2); break;
+        case 'ghost_2': playTone(ctx, 600, 'sine', now, 0.5, 0.2); playTone(ctx, 605, 'sine', now, 0.5, 0.2); break;
+        case 'heartbeat': playTone(ctx, 60, 'sine', now, 0.1, 0.4); playTone(ctx, 60, 'sine', now + 0.15, 0.1, 0.3); break;
+        case 'creak': playNoise(ctx, now, 0.3, 'bandpass', 400, 0.4); slideTone(ctx, 200, 250, 'sawtooth', now, 0.3, 0.1); break;
+        case 'footstep_horror': playNoise(ctx, now, 0.2, 'lowpass', 300, 0.4); break;
+        case 'wind': playNoise(ctx, now, 1.5, 'lowpass', 600, 0.3); break;
+        case 'thunder': playNoise(ctx, now, 1.0, 'lowpass', 100, 0.8); playTone(ctx, 40, 'sawtooth', now, 0.5, 0.3); break;
+
+        // --- VEHICLES & MECHANICS ---
+        case 'car_engine': playTone(ctx, 70, 'sawtooth', now, 0.5, 0.15); playNoise(ctx, now, 0.5, 'bandpass', 150, 0.2); break;
+        case 'car_horn': playTone(ctx, 400, 'square', now, 0.4, vol); break;
+        case 'car_skid': playNoise(ctx, now, 0.5, 'bandpass', 2000, 0.5); break;
+        case 'boost': slideTone(ctx, 100, 400, 'sawtooth', now, 0.3, vol); playNoise(ctx, now, 0.3, 'bandpass', 800, 0.3); break;
+        case 'gear_shift': playNoise(ctx, now, 0.1, 'highpass', 1000, 0.3); playTone(ctx, 150, 'square', now, 0.05, 0.2); break;
+        case 'mech_step': playNoise(ctx, now, 0.2, 'lowpass', 300, 0.6); playTone(ctx, 60, 'square', now, 0.15, 0.3); break;
+        case 'hydraulic': slideTone(ctx, 200, 600, 'sawtooth', now, 0.4, vol); playNoise(ctx, now, 0.3, 'bandpass', 1000, 0.2); break;
+        case 'brake': playNoise(ctx, now, 0.4, 'highpass', 1500, 0.4); break;
+        case 'crash': playNoise(ctx, now, 0.6, 'lowpass', 300, 0.8); playTone(ctx, 80, 'square', now, 0.3, 0.4); break;
+        case 'boat_water': playNoise(ctx, now, 0.5, 'lowpass', 800, 0.4); break;
+
         default: playTone(ctx, 440, 'square', now, 0.2, vol); break;
       }
     }
@@ -485,7 +625,7 @@
     // WAV Download Logic
     function generateWav(type) {
       const sampleRate = 44100;
-      const duration = 1.0; 
+      const duration = 1.5; // Slightly longer duration for complex sounds
       const offlineCtx = new OfflineAudioContext(1, sampleRate * duration, sampleRate);
       
       renderSound(type, offlineCtx, 0);
@@ -534,46 +674,70 @@
       return buffer;
     }
 
-    // --- DATA LAYER ---
+    // --- DATA LAYER (EXPANDED) ---
     const soundPacks = [
       { id: 1, title: "RPG Essentials", category: "RPG", color: "#29adff", sounds: [
         { name: "Coin (Classic)", type: "coin_1" }, { name: "Coin (High)", type: "coin_2" }, { name: "Coin (Fast)", type: "coin_3" },
+        { name: "Coin (Treble)", type: "coin_4" }, { name: "Coin (Slide)", type: "coin_5" }, { name: "Coin (Arp)", type: "coin_6" },
         { name: "Powerup (Rise)", type: "powerup_1" }, { name: "Powerup (Max)", type: "powerup_2" }, { name: "Level Up", type: "powerup_3" },
-        { name: "Win Jingle", type: "win" }, { name: "Secret", type: "magic_1" }
+        { name: "Powerup (Slow)", type: "powerup_4" }, { name: "Powerup (Fast)", type: "powerup_5" },
+        { name: "Key (Jingle)", type: "key_1" }, { name: "Key (Slide)", type: "key_2" },
+        { name: "Chest Open", type: "chest_open" }, { name: "Save Game", type: "save" },
+        { name: "Heal (Basic)", type: "heal_1" }, { name: "Heal (Arp)", type: "heal_2" },
+        { name: "Item Get", type: "item_get" }, { name: "Secret Found", type: "secret" }, { name: "Level Up", type: "level_up" }
       ]},
       { id: 2, title: "Physics & Impacts", category: "SFX", color: "#ff6c24", sounds: [
-        { name: "Launch", type: "launch" }, { name: "Impact Soft", type: "impact" }, { name: "Impact Hard", type: "hit_1" },
-        { name: "Break Glass", type: "break" }, { name: "Break Wood", type: "hit_3" }, { name: "Explosion", type: "explosion_1" }, { name: "Thud", type: "hit_2" }
+        { name: "Impact Soft", type: "impact" }, { name: "Impact Hard", type: "hit_1" }, { name: "Impact Punch", type: "hit_2" },
+        { name: "Impact Heavy", type: "hit_3" }, { name: "Impact Critical", type: "hit_4" }, { name: "Impact Low", type: "hit_5" },
+        { name: "Impact Blunt", type: "hit_6" },
+        { name: "Explosion (Std)", type: "explosion_1" }, { name: "Explosion (Deep)", type: "explosion_2" }, { name: "Explosion (Fall)", type: "explosion_3" }, { name: "Explosion (Muffled)", type: "explosion_4" },
+        { name: "Break Glass", type: "break_glass" }, { name: "Break Wood", type: "break_wood" }, { name: "Break Stone", type: "break_stone" }, { name: "Break Metal", type: "break_metal" },
+        { name: "Thud", type: "thud" }, { name: "Splash", type: "splash" }, { name: "Crunch", type: "crunch" },
+        { name: "Bounce (Low)", type: "bounce_1" }, { name: "Bounce (High)", type: "bounce_2" }
       ]},
       { id: 3, title: "Player Actions", category: "GAME", color: "#ff004d", sounds: [
-        { name: "Jump (Short)", type: "jump_1" }, { name: "Jump (Tall)", type: "jump_2" }, { name: "Double Jump", type: "jump_3" },
-        { name: "Die", type: "die" }, { name: "Hurt", type: "hit_2" }, { name: "Fail", type: "fail" }
+        { name: "Jump (Short)", type: "jump_1" }, { name: "Jump (Tall)", type: "jump_2" }, { name: "Jump (Double)", type: "jump_3" }, { name: "Jump (Var)", type: "jump_4" }, { name: "Double Jump", type: "double_jump" },
+        { name: "Dash (Fast)", type: "dash_1" }, { name: "Dash (Slow)", type: "dash_2" },
+        { name: "Step (Gravel)", type: "step_1" }, { name: "Step (Dirt)", type: "step_2" },
+        { name: "Climb (Latch)", type: "climb_1" }, { name: "Climb (Move)", type: "climb_2" },
+        { name: "Swim (Strok)", type: "swim_1" }, { name: "Swim (Splash)", type: "swim_2" },
+        { name: "Death (Fall)", type: "death_1" }, { name: "Death (Hit)", type: "death_2" },
+        { name: "Hurt (Minor)", type: "hurt_1" }, { name: "Hurt (Major)", type: "hurt_2" },
+        { name: "Land (Soft)", type: "land_1" }
       ]},
       { id: 4, title: "System & UI", category: "UI", color: "#00ff94", sounds: [
-        { name: "Select", type: "ui_select" }, { name: "Confirm", type: "ui_confirm" }, { name: "Cancel", type: "ui_cancel" },
-        { name: "Error", type: "ui_error" }, { name: "Pause", type: "select" }
+        { name: "Select", type: "ui_select" }, { name: "Confirm", type: "ui_confirm" }, { name: "Cancel", type: "ui_cancel" }, { name: "Error", type: "ui_error" },
+        { name: "Scroll (Click)", type: "ui_scroll_1" }, { name: "Scroll (Soft)", type: "ui_scroll_2" },
+        { name: "Type (Key 1)", type: "ui_type_1" }, { name: "Type (Key 2)", type: "ui_type_2" },
+        { name: "Pause", type: "ui_pause" }, { name: "Unpause", type: "ui_unpause" },
+        { name: "Popup Open", type: "ui_popup" }, { name: "Popup Close", type: "ui_close" },
+        { name: "Achievement", type: "ui_achievement" }, { name: "Switch Toggle", type: "ui_switch" }, { name: "Slider Move", type: "ui_slider" }
       ]},
       { id: 5, title: "Fantasy Combat", category: "RPG", color: "#c2c3c7", sounds: [
-        { name: "Sword Swing", type: "sword_1" }, { name: "Sword Clash", type: "sword_2" }, { name: "Stab", type: "sword_3" },
-        { name: "Magic Cast", type: "magic_2" }, { name: "Magic Burst", type: "magic_3" }, { name: "Heal", type: "magic_1" }
+        { name: "Sword Swing 1", type: "sword_1" }, { name: "Sword Swing 2", type: "sword_2" }, { name: "Sword Stab", type: "sword_3" }, { name: "Sword Heavy", type: "sword_4" }, { name: "Sword Quick", type: "sword_5" },
+        { name: "Arrow Shoot", type: "arrow_1" }, { name: "Arrow Fly", type: "arrow_2" },
+        { name: "Magic Cast 1", type: "magic_cast_1" }, { name: "Magic Cast 2", type: "magic_cast_2" }, { name: "Magic Cast 3", type: "magic_cast_3" },
+        { name: "Fireball", type: "magic_fire" }, { name: "Ice Shard", type: "magic_ice" }, { name: "Lightning", type: "magic_lightning" },
+        { name: "Shield Hit", type: "shield_1" }, { name: "Shield Up", type: "shield_2" }, { name: "Block Metal", type: "block_metal" }
       ]},
       { id: 6, title: "Sci-Fi Tech", category: "UI", color: "#3a86ff", sounds: [
-        { name: "Laser (Low)", type: "laser_1" }, { name: "Laser (High)", type: "laser_2" }, { name: "Plasma", type: "laser_3" },
-        { name: "Door Open", type: "magic_2" }, { name: "Teleport", type: "magic_3" }
+        { name: "Laser (Low)", type: "laser_1" }, { name: "Laser (High)", type: "laser_2" }, { name: "Plasma", type: "laser_3" }, { name: "Laser (Rapid)", type: "laser_4" }, { name: "Laser (Pulse)", type: "laser_5" },
+        { name: "Engine Hum", type: "engine_hum" }, { name: "Engine Start", type: "engine_start" }, { name: "Engine Stop", type: "engine_stop" },
+        { name: "Teleport 1", type: "teleport_1" }, { name: "Teleport 2", type: "teleport_2" },
+        { name: "Forcefield", type: "forcefield" }, { name: "Alarm (Klaxon)", type: "alarm_1" }, { name: "Alarm (Beep)", type: "alarm_2" },
+        { name: "Door (Hi-Tech)", type: "door_1" }, { name: "Door (Airlock)", type: "door_2" }, { name: "Scanner", type: "scan" }
       ]},
-      { id: 7, title: "Puzzle Arcade", category: "PUZZLE", color: "#ffec27", sounds: [
-        { name: "Match", type: "coin_3" }, { name: "Swap", type: "ui_select" }, { name: "Invalid", type: "ui_error" }, { name: "Puzzle Solved", type: "win" }
+      { id: 7, title: "Horror & Atmosphere", category: "SFX", color: "#8b9bb4", sounds: [
+        { name: "Ambient Drone", type: "horror_1" }, { name: "Wind Howl", type: "horror_2" }, { name: "Ghost Moan", type: "horror_3" },
+        { name: "Jump Scare", type: "horror_sting" }, { name: "Ghost Pass", type: "ghost_1" }, { name: "Ghost Whisper", type: "ghost_2" },
+        { name: "Heartbeat", type: "heartbeat" }, { name: "Creak", type: "creak" }, { name: "Footstep", type: "footstep_horror" },
+        { name: "Wind", type: "wind" }, { name: "Thunder", type: "thunder" }
       ]},
-      { id: 8, title: "Monsters", category: "RPG", color: "#8b9bb4", sounds: [
-        { name: "Bite", type: "monster_bite" }, { name: "Growl", type: "monster_growl" }, { name: "Monster Death", type: "monster_death" },
-        { name: "Ghost", type: "magic_1" }, { name: "Squelch", type: "hit_3" }
-      ]},
-      { id: 9, title: "Arcade Classics", category: "RETRO", color: "#ff77a8", sounds: [
-        { name: "Beep", type: "ui_select" }, { name: "Bloop", type: "coin_1" }, { name: "Bounce", type: "jump_1" },
-        { name: "Bonus", type: "powerup_1" }, { name: "GameOver", type: "fail" }
-      ]},
-      { id: 10, title: "Nature & Enviro", category: "WORLD", color: "#41ae76", sounds: [
-        { name: "Splash", type: "hit_3" }, { name: "Thunder", type: "explosion_2" }, { name: "Wind", type: "magic_1" }, { name: "Rock Fall", type: "hit_1" }
+      { id: 8, title: "Vehicles & Mechanics", category: "SFX", color: "#41ae76", sounds: [
+        { name: "Car Engine", type: "car_engine" }, { name: "Car Horn", type: "car_horn" }, { name: "Skid", type: "car_skid" },
+        { name: "Turbo Boost", type: "boost" }, { name: "Gear Shift", type: "gear_shift" },
+        { name: "Mech Step", type: "mech_step" }, { name: "Hydraulic", type: "hydraulic" },
+        { name: "Brake Squeal", type: "brake" }, { name: "Car Crash", type: "crash" }, { name: "Boat Water", type: "boat_water" }
       ]}
     ];
 
@@ -740,7 +904,7 @@
         let ground = bodies.find(b => b.label === 'ground');
         if (creature && projectile) killCreature(creature);
         if (creature && block) { const speed = Math.sqrt(Math.pow(block.velocity.x, 2) + Math.pow(block.velocity.y, 2)); if (speed > 2) killCreature(creature); }
-        if (projectile && block) { const speed = Math.sqrt(Math.pow(projectile.velocity.x, 2) + Math.pow(projectile.velocity.y, 2)); if (speed > 2) { block.health--; playSound('impact'); if (block.health <= 0) { playSound('break'); Composite.remove(engine.world, block); blocks = blocks.filter(b => b.id !== block.id); } } }
+        if (projectile && block) { const speed = Math.sqrt(Math.pow(projectile.velocity.x, 2) + Math.pow(projectile.velocity.y, 2)); if (speed > 2) { block.health--; playSound('impact'); if (block.health <= 0) { playSound('break_glass'); Composite.remove(engine.world, block); blocks = blocks.filter(b => b.id !== block.id); } } }
         if (creature && ground) { const speed = Math.abs(creature.velocity.y); if (speed > 10) killCreature(creature); }
       });
     }
