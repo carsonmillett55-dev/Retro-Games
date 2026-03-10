@@ -1,334 +1,983 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/index.html b/index.html
-index 8f22d2cca996350c0a24b719d23ff3ce8a45a6ee..a8216316b058ec33932d42cfcb3d736f6063acdb 100644
---- a/index.html
-+++ b/index.html
-@@ -81,121 +81,132 @@
-     
-     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s steps(3); }
-     .modal-overlay.visible { opacity: 1; visibility: visible; }
- 
-     .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 85vh; background: var(--bg); border: 8px solid var(--fg); z-index: 101; opacity: 0; visibility: hidden; transition: all 0.2s steps(3); display: flex; flex-direction: column; }
-     .modal-content.visible { opacity: 1; visibility: visible; }
-     .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
-     .sound-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 2px dashed var(--muted); }
-     .sound-item:last-child { border-bottom: none; }
-     
-     .action-btn { width: 32px; height: 32px; font-size: 12px; background: var(--secondary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-     .action-btn.dl { background: var(--success); color: var(--bg); }
-     
-     .reveal { opacity: 0; transform: translateY(20px); transition: all 0.4s steps(3); }
-     .reveal.visible { opacity: 1; transform: translateY(0); }
- 
-     .form-input { width: 100%; background: var(--bg); border: 2px solid var(--muted); color: var(--fg); padding: 10px; margin-bottom: 10px; font-family: 'Space Mono', monospace; font-size: 12px; }
-     .form-input:focus { border-color: var(--accent); outline: none; }
- 
-     #cookie-banner {
-       position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-elevated); border-top: 4px solid var(--accent); padding: 16px; z-index: 9999; display: none; flex-direction: column; align-items: center; gap: 12px; text-align: center;
-     }
-     #cookie-banner.visible { display: flex; }
-     #cookie-banner p { font-size: 12px; max-width: 600px; }
- 
-+    .ad-slot { min-height: 90px; display: flex; align-items: center; justify-content: center; }
-+    .ad-slot.hidden { display: none; }
-+
-     /* Loader */
-     .loader { border: 4px solid var(--muted); border-top: 4px solid var(--accent); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
-     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
- 
-   </style>
- </head>
- <body class="relative">
- 
-   <!-- Navigation -->
-   <nav class="fixed top-0 left-0 right-0 z-50 bg-[var(--bg)] border-b-4 border-[var(--fg)]">
-     <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-       <div class="flex items-center gap-2 md:gap-3">
-         <div class="w-6 h-6 md:w-8 md:h-8 bg-[var(--secondary)]"></div>
-         <span class="font-bold text-[6px] md:text-xs tracking-tight pixel-font hidden sm:block">FREERETROSOUNDS.COM</span>
-       </div>
-       <div class="flex items-center gap-3 md:gap-4 text-[8px] md:text-xs text-[var(--muted)]">
-         <button id="nav-library" class="hover:text-[var(--accent)] transition-colors">LIBRARY</button>
-         <button id="nav-game" class="hover:text-[var(--accent)] transition-colors text-[var(--success)]">PLAY GAME</button>
-       </div>
-       <button class="btn-primary text-[6px] md:text-[8px] py-2 px-2 md:px-3">START</button>
-     </div>
-   </nav>
- 
-   <!-- MAIN SITE CONTENT -->
-   <div id="site-content">
-     <header class="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 pt-20 relative">
-       <div class="max-w-3xl mx-auto z-10">
-         <h1 class="text-2xl md:text-5xl font-bold leading-tight mb-6 tracking-wide">
-           RETRO<br/>
-           <span class="text-[var(--accent)]">SOUND FX</span>
-         </h1>
-         <p class="text-[var(--muted)] max-w-xl mx-auto mb-10 text-[10px] md:text-xs leading-relaxed">
--          The largest free 8-bit sound library on the web. High-quality procedural audio. Download individual files or entire packs as ZIP.
-+          A curated free retro sound library for game developers. Preview handcrafted 8-bit inspired effects, then download individual WAV files or full ZIP packs in seconds.
-         </p>
-         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-           <button onclick="document.getElementById('library').scrollIntoView({behavior: 'smooth'})" class="btn-primary text-[10px] px-8 py-4 inline-flex">
-             LIBRARY
-           </button>
-           <button id="play-game-btn-main" class="btn-primary text-[10px] px-8 py-4 inline-flex bg-[var(--secondary)]">
-             SEE IN ACTION
-           </button>
-         </div>
-       </div>
-     </header>
- 
-     <!-- AD SLOT 1 -->
--    <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
--      <ins class="adsbygoogle"
-+    <div id="library-ad-slot" class="max-w-4xl mx-auto px-6 mb-12 ad-slot hidden" aria-label="Advertisement">
-+      <ins id="library-ad-ins" class="adsbygoogle"
-            style="display:block"
-            data-ad-client="ca-pub-6924346257512616"
-            data-ad-slot="2296260033"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
--      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-     </div>
- 
-     <section id="library" class="py-24 px-6 relative">
-       <div class="max-w-7xl mx-auto">
-         <div class="text-center mb-16 reveal">
-           <h2 class="text-lg md:text-2xl font-bold mb-4 pixel-font">SELECT PACK</h2>
-           <div class="w-24 h-1 bg-[var(--accent)] mx-auto mt-4"></div>
-         </div>
-         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="packs-container"></div>
-       </div>
-     </section>
- 
-+    <section id="adsense-readiness" class="py-8 px-6">
-+      <div class="max-w-4xl mx-auto text-[11px] md:text-xs leading-relaxed text-[var(--muted)] space-y-4">
-+        <h3 class="pixel-font text-[10px] text-[var(--fg)]">WHAT YOU GET FROM THIS LIBRARY</h3>
-+        <p>Every pack on FreeRetroSounds includes handcrafted retro SFX previews, direct WAV downloads, and commercial-friendly usage terms for indie games, prototypes, and game jams.</p>
-+        <p>Collections are organized by genre (RPG, platformer, racing, arcade, sci-fi, ambient, and utility), making it easy to find the exact sound style needed for menus, rewards, UI feedback, movement, combat, and environmental effects.</p>
-+        <p>Content is reviewed and updated over time to improve consistency, file naming, and download usability. We focus on clarity and usefulness instead of unverifiable "largest library" claims.</p>
-+      </div>
-+    </section>
-+
-     <footer id="about" class="py-12 px-6 border-t-4 border-[var(--fg)] mt-20 bg-[var(--bg-elevated)]">
-       <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left text-xs text-[var(--muted)]">
-         <div>
-           <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ABOUT</h4>
--          <p>FreeRetroSounds.com provides high-quality, royalty-free 8-bit sound effects for indie developers.</p>
-+          <p>FreeRetroSounds.com is a curated retro audio resource for indie developers, students, and hobbyists. We publish practical sound packs built for gameplay, UI, and prototyping workflows.</p>
-           <button onclick="openLegalModal('about')" class="mt-2 text-[var(--accent)] hover:underline">Read More</button>
-         </div>
-         <div>
-           <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">LEGAL</h4>
-           <ul class="space-y-2">
-             <li><button onclick="openLegalModal('privacy')" class="hover:text-[var(--accent)]">Privacy Policy</button></li>
-             <li><button onclick="openLegalModal('terms')" class="hover:text-[var(--accent)]">Terms of Service</button></li>
-             <li><button onclick="openLegalModal('contact')" class="hover:text-[var(--accent)]">Contact Us</button></li>
-           </ul>
-         </div>
-         <div>
-           <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ADS INFO</h4>
-           <p>We use Google AdSense to support this site.</p>
-           <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="block mt-2 text-[var(--accent)] hover:underline">Google Ad Settings</a>
-         </div>
-       </div>
-       <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-[var(--muted)] text-center">
-         <p class="pixel-font text-[8px] opacity-50">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
-       </div>
-     </footer>
-   </div>
- 
-   <!-- GAME CONTENT -->
-   <div id="game-container" class="pt-20 pb-10 px-2 md:px-4 min-h-screen flex flex-col items-center">
-     <div class="text-center mb-4 md:mb-6">
-@@ -243,75 +254,110 @@
-   <!-- LEGAL MODALS -->
-   <div class="modal-overlay" id="legal-overlay" onclick="closeLegalModal()"></div>
-   <div class="modal-content" id="legal-modal">
-     <div class="p-4 md:p-6 border-b-4 border-[var(--fg)] flex justify-between items-center flex-shrink-0 bg-[var(--bg-elevated)]">
-       <h3 class="text-xs md:text-sm font-bold pixel-font" id="legal-title">TITLE</h3>
-       <button class="text-[var(--muted)] hover:text-white text-2xl" onclick="closeLegalModal()">&times;</button>
-     </div>
-     <div class="modal-body text-[11px] leading-relaxed space-y-4" id="legal-body"></div>
-   </div>
- 
-   <!-- Cookie Banner -->
-   <div id="cookie-banner">
-     <p class="text-[var(--fg)]">
-       We use cookies to personalize ads and analyze traffic. By clicking "Accept", you consent to our use of cookies. 
-       <button onclick="openLegalModal('privacy')" class="text-[var(--accent)] underline">Privacy Policy</button>
-     </p>
-     <div class="flex gap-4">
-       <button id="decline-cookies" class="bg-gray-600 text-white px-4 py-2 text-xs pixel-font border-none cursor-pointer">DECLINE</button>
-       <button id="accept-cookies" class="bg-[var(--success)] text-[var(--bg)] px-4 py-2 text-xs pixel-font border-none cursor-pointer">ACCEPT</button>
-     </div>
-   </div>
- 
-   <script>
-     // --- COMPLIANCE & COOKIE LOGIC ---
-     const cookieBanner = document.getElementById('cookie-banner');
-+    const adSlot = document.getElementById('library-ad-slot');
-+    const adElement = document.getElementById('library-ad-ins');
-+    let adRequested = false;
-+
-+    function hasAcceptedCookies() {
-+      return localStorage.getItem('cookieConsent') === 'accepted';
-+    }
-+
-+    function updateAdVisibility() {
-+      const currentSiteContent = document.getElementById('site-content');
-+      const showAd = hasAcceptedCookies() && currentSiteContent.style.display !== 'none';
-+      adSlot.classList.toggle('hidden', !showAd);
-+
-+      if (!showAd) {
-+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
-+        return;
-+      }
-+
-+      (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
-+      if (!adRequested) {
-+        try {
-+          (adsbygoogle = window.adsbygoogle || []).push({});
-+          adRequested = true;
-+          adElement.dataset.adLoaded = 'true';
-+        } catch (e) {
-+          console.warn('AdSense not ready yet', e);
-+        }
-+      }
-+    }
-+
-     const userConsent = localStorage.getItem('cookieConsent');
--    if (!userConsent) { cookieBanner.classList.add('visible'); } 
--    else if (userConsent === 'accepted') { (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0; }
-+    if (!userConsent) {
-+      cookieBanner.classList.add('visible');
-+      (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
-+    } else {
-+      updateAdVisibility();
-+    }
- 
-     document.getElementById('accept-cookies').onclick = () => {
--        localStorage.setItem('cookieConsent', 'accepted');
--        cookieBanner.classList.remove('visible');
--        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
-+      localStorage.setItem('cookieConsent', 'accepted');
-+      cookieBanner.classList.remove('visible');
-+      updateAdVisibility();
-     };
-+
-     document.getElementById('decline-cookies').onclick = () => {
--        localStorage.setItem('cookieConsent', 'declined');
--        cookieBanner.classList.remove('visible');
--        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
-+      localStorage.setItem('cookieConsent', 'declined');
-+      cookieBanner.classList.remove('visible');
-+      updateAdVisibility();
-     };
- 
-     // Legal Modal Content
-     const legalModal = document.getElementById('legal-modal');
-     const legalOverlay = document.getElementById('legal-overlay');
-     const legalTitle = document.getElementById('legal-title');
-     const legalBody = document.getElementById('legal-body');
-     const legalContent = {
--        privacy: { title: "PRIVACY POLICY", body: `<p>At FreeRetroSounds.com, we respect your privacy.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Cookies</h4><p>We use cookies to remember consent preferences and serve ads via Google AdSense.</p>` },
--        terms: { title: "TERMS OF SERVICE", body: `<p>All sound effects are free to use for personal and commercial projects.</p>` },
--        contact: { title: "CONTACT US", body: `<form action="https://formsubmit.co/driveyourtest@gmail.com" method="POST" class="mt-4 space-y-4"><input type="hidden" name="_subject" value="Contact"><input type="text" name="name" class="form-input" placeholder="Name" required><input type="email" name="email" class="form-input" placeholder="Email" required><textarea name="message" rows="4" class="form-input" placeholder="Message" required></textarea><button type="submit" class="btn-primary w-full text-center">SEND</button></form>` },
--        about: { title: "ABOUT US", body: `<p>We provide high-quality, authentic 8-bit sound effects for game developers.</p>` }
-+        privacy: { title: "PRIVACY POLICY", body: `<p>At FreeRetroSounds.com, we respect your privacy.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Cookies</h4><p>We use cookies to remember consent preferences and serve ads via Google AdSense. You can accept or decline ad cookies from the banner and change your browser cookie settings at any time.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Data Handling</h4><p>We do not sell personal data. Contact form submissions are used only to respond to your request.</p>` },
-+        terms: { title: "TERMS OF SERVICE", body: `<p>All sound effects are free to use for personal and commercial projects, including games, trailers, videos, and prototypes.</p><p class="mt-3">You may not resell or redistribute this library as a standalone competing sound pack collection.</p>` },
-+        contact: { title: "CONTACT US", body: `<p>If you need custom packs, licensing clarification, or want to report a broken sound, send us a message.</p><form action="https://formsubmit.co/driveyourtest@gmail.com" method="POST" class="mt-4 space-y-4"><input type="hidden" name="_subject" value="Contact"><input type="text" name="name" class="form-input" placeholder="Name" required><input type="email" name="email" class="form-input" placeholder="Email" required><textarea name="message" rows="4" class="form-input" placeholder="Message" required></textarea><button type="submit" class="btn-primary w-full text-center">SEND</button></form>` },
-+        about: { title: "ABOUT US", body: `<p>FreeRetroSounds.com is an independent project focused on practical retro-style audio assets for creators.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Editorial Focus</h4><p>We prioritize usability: short, game-ready effects, clear pack categories, instant preview, and direct WAV/ZIP downloads.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Who It Is For</h4><p>Indie developers, students, jam teams, and content creators who need fast, dependable retro SFX without subscription gates.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Accuracy Note</h4><p>We avoid unverifiable market-size claims (such as calling ourselves the "largest") and instead focus on maintaining high-quality, useful sound collections.</p>` }
-     };
-     function openLegalModal(type) {
-         const content = legalContent[type];
-         if (!content) return;
-         legalTitle.textContent = content.title;
-         legalBody.innerHTML = content.body;
-         legalOverlay.classList.add('visible');
-         legalModal.classList.add('visible');
-     }
-     function closeLegalModal() { legalOverlay.classList.remove('visible'); legalModal.classList.remove('visible'); }
- 
-     // --- AUDIO ENGINE ---
-     let audioCtx = null;
-     function initAudio() {
-       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-       if (audioCtx.state === 'suspended') audioCtx.resume();
-     }
- 
-     function playTone(ctx, freq, type, time, duration, volume) {
-       const osc = ctx.createOscillator(); const gain = ctx.createGain();
-       osc.type = type; osc.frequency.value = freq;
-       osc.connect(gain); gain.connect(ctx.destination);
-       gain.gain.setValueAtTime(volume, time);
-       gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-       osc.start(time); osc.stop(time + duration);
-@@ -767,55 +813,61 @@
-       { id: 16, title: "Jungle & Wildlife", category: "SFX", color: "#228b22", sounds: [
-         { name: "Bird Chirp 1", type: "bird_1" }, { name: "Bird Chirp 2", type: "bird_2" },
-         { name: "Insect Buzz", type: "insect_buzz" }, { name: "Monkey", type: "monkey" },
-         { name: "Water Drip", type: "water_drip" }, { name: "Leaves", type: "leaves" }
-       ]},
-       { id: 17, title: "Industrial Machines", category: "SFX", color: "#708090", sounds: [
-         { name: "Drill", type: "drill" }, { name: "Hammer", type: "hammer" },
-         { name: "Saw", type: "saw" }, { name: "Steam", type: "steam" },
-         { name: "Conveyor", type: "conveyor" }, { name: "Furnace", type: "furnace" }
-       ]},
-       { id: 18, title: "Nitro & Turbo", category: "SFX", color: "#ff4500", sounds: [
-         { name: "Nitro Burst", type: "nitro" }, { name: "Turbo Engage", type: "turbo_engage" },
-         { name: "Boost 1", type: "boost" }, { name: "Gear Up", type: "gear_up" }
-       ]}
-     ];
- 
-     // --- UI LOGIC ---
-     const siteContent = document.getElementById('site-content');
-     const gameContainer = document.getElementById('game-container');
-     const navLibrary = document.getElementById('nav-library');
-     const navGame = document.getElementById('nav-game');
-     const playGameBtnMain = document.getElementById('play-game-btn-main');
-     const backToLibraryBtn = document.getElementById('back-to-library');
-     
-     function showLibrary() {
--      siteContent.style.display = 'block'; gameContainer.style.display = 'none';
--      if(typeof gameLoop !== 'undefined') cancelAnimationFrame(gameLoop);
-+      siteContent.style.display = 'block';
-+      gameContainer.style.display = 'none';
-+      if (typeof gameLoop !== 'undefined') cancelAnimationFrame(gameLoop);
-+      updateAdVisibility();
-     }
-+
-     function showGame() {
--      siteContent.style.display = 'none'; gameContainer.style.display = 'flex'; initGame();
-+      siteContent.style.display = 'none';
-+      gameContainer.style.display = 'flex';
-+      updateAdVisibility();
-+      initGame();
-     }
-     navLibrary.addEventListener('click', showLibrary);
-     navGame.addEventListener('click', showGame);
-     playGameBtnMain.addEventListener('click', showGame);
-     backToLibraryBtn.addEventListener('click', showLibrary);
- 
-     const packsContainer = document.getElementById('packs-container');
-     soundPacks.forEach((pack) => {
-       const card = document.createElement('div');
-       card.className = 'pack-card reveal';
-       card.innerHTML = `
-         <div class="p-4 md:p-6">
-           <span class="text-[8px] font-bold pixel-font" style="color: ${pack.color}">${pack.category}</span>
-           <h3 class="text-xs md:text-sm font-bold mt-3 mb-1 pixel-font">${pack.title}</h3>
-           <p class="text-[10px] md:text-xs text-[var(--muted)] mb-4 md:mb-6">${pack.sounds.length} Sounds</p>
-           <div class="border-t-2 border-dashed border-[var(--muted)] pt-4 flex justify-between items-center">
-              <span class="text-[8px] text-[var(--muted)] pixel-font">VIEW PACK</span>
-              <span style="color: ${pack.color}">→</span>
-           </div>
-         </div>`;
-       card.onclick = () => openModal(pack);
-       packsContainer.appendChild(card);
-     });
- 
-     const modalOverlay = document.getElementById('modal-overlay');
- 
-EOF
-)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FreeRetroSounds.com — Retro Game Sound Packs</title>
+  
+  <!-- HTTPS Resources -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6924346257512616"
+     crossorigin="anonymous"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+  </script>
+
+  <style>
+    :root {
+      --bg: #1a1c2c;
+      --bg-elevated: #262b44;
+      --fg: #f4f4f4;
+      --muted: #5a6988;
+      --accent: #29adff;
+      --secondary: #ff6c24;
+      --success: #00ff94;
+      --danger: #ff004d;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Space Mono', monospace;
+      background-color: var(--bg);
+      color: var(--fg);
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+      background-size: 100% 4px;
+    }
+
+    h1, h2, h3, h4, .pixel-font { font-family: 'Press Start 2P', cursive; }
+
+    .pack-card {
+      background: var(--bg-elevated);
+      border: 4px solid transparent;
+      transition: all 0.1s steps(2);
+      cursor: pointer;
+    }
+    .pack-card:hover { border-color: var(--accent); transform: translate(-4px, -4px); box-shadow: 4px 4px 0px var(--accent); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      padding: 12px 24px;
+      border: none;
+      border-bottom: 4px solid rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+    .btn-primary:hover { background: #62c7ff; transform: translateY(-2px); }
+    .btn-primary:active { transform: translateY(2px); border-bottom-width: 2px; }
+    
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--fg);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 8px;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #game-container { display: none; }
+    #game-canvas { background: #262b44; border: 4px solid var(--fg); cursor: crosshair; image-rendering: pixelated; touch-action: none; width: 100%; max-width: 800px; height: auto; }
+    
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s steps(3); }
+    .modal-overlay.visible { opacity: 1; visibility: visible; }
+
+    .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 85vh; background: var(--bg); border: 8px solid var(--fg); z-index: 101; opacity: 0; visibility: hidden; transition: all 0.2s steps(3); display: flex; flex-direction: column; }
+    .modal-content.visible { opacity: 1; visibility: visible; }
+    .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
+    .sound-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 2px dashed var(--muted); }
+    .sound-item:last-child { border-bottom: none; }
+    
+    .action-btn { width: 32px; height: 32px; font-size: 12px; background: var(--secondary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .action-btn.dl { background: var(--success); color: var(--bg); }
+    
+    .reveal { opacity: 0; transform: translateY(20px); transition: all 0.4s steps(3); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .form-input { width: 100%; background: var(--bg); border: 2px solid var(--muted); color: var(--fg); padding: 10px; margin-bottom: 10px; font-family: 'Space Mono', monospace; font-size: 12px; }
+    .form-input:focus { border-color: var(--accent); outline: none; }
+
+    #cookie-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-elevated); border-top: 4px solid var(--accent); padding: 16px; z-index: 9999; display: none; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+    }
+    #cookie-banner.visible { display: flex; }
+    #cookie-banner p { font-size: 12px; max-width: 600px; }
+
+    /* Loader */
+    .loader { border: 4px solid var(--muted); border-top: 4px solid var(--accent); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body class="relative">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[var(--bg)] border-b-4 border-[var(--fg)]">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 md:gap-3">
+        <div class="w-6 h-6 md:w-8 md:h-8 bg-[var(--secondary)]"></div>
+        <span class="font-bold text-[6px] md:text-xs tracking-tight pixel-font hidden sm:block">FREERETROSOUNDS.COM</span>
+      </div>
+      <div class="flex items-center gap-3 md:gap-4 text-[8px] md:text-xs text-[var(--muted)]">
+        <button id="nav-library" class="hover:text-[var(--accent)] transition-colors">LIBRARY</button>
+        <button id="nav-game" class="hover:text-[var(--accent)] transition-colors text-[var(--success)]">PLAY GAME</button>
+      </div>
+      <button class="btn-primary text-[6px] md:text-[8px] py-2 px-2 md:px-3">START</button>
+    </div>
+  </nav>
+
+  <!-- MAIN SITE CONTENT -->
+  <div id="site-content">
+    <header class="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 pt-20 relative">
+      <div class="max-w-3xl mx-auto z-10">
+        <h1 class="text-2xl md:text-5xl font-bold leading-tight mb-6 tracking-wide">
+          RETRO<br/>
+          <span class="text-[var(--accent)]">SOUND FX</span>
+        </h1>
+        <p class="text-[var(--muted)] max-w-xl mx-auto mb-10 text-[10px] md:text-xs leading-relaxed">
+          The largest free 8-bit sound library on the web. High-quality procedural audio. Download individual files or entire packs as ZIP.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button onclick="document.getElementById('library').scrollIntoView({behavior: 'smooth'})" class="btn-primary text-[10px] px-8 py-4 inline-flex">
+            LIBRARY
+          </button>
+          <button id="play-game-btn-main" class="btn-primary text-[10px] px-8 py-4 inline-flex bg-[var(--secondary)]">
+            SEE IN ACTION
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- AD SLOT 1 -->
+    <div class="max-w-4xl mx-auto px-6 mb-12 min-h-[90px] flex items-center justify-center">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6924346257512616"
+           data-ad-slot="2296260033"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <section id="library" class="py-24 px-6 relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 reveal">
+          <h2 class="text-lg md:text-2xl font-bold mb-4 pixel-font">SELECT PACK</h2>
+          <div class="w-24 h-1 bg-[var(--accent)] mx-auto mt-4"></div>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="packs-container"></div>
+      </div>
+    </section>
+
+    <footer id="about" class="py-12 px-6 border-t-4 border-[var(--fg)] mt-20 bg-[var(--bg-elevated)]">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left text-xs text-[var(--muted)]">
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ABOUT</h4>
+          <p>FreeRetroSounds.com provides high-quality, royalty-free 8-bit sound effects for indie developers.</p>
+          <button onclick="openLegalModal('about')" class="mt-2 text-[var(--accent)] hover:underline">Read More</button>
+        </div>
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">LEGAL</h4>
+          <ul class="space-y-2">
+            <li><button onclick="openLegalModal('privacy')" class="hover:text-[var(--accent)]">Privacy Policy</button></li>
+            <li><button onclick="openLegalModal('terms')" class="hover:text-[var(--accent)]">Terms of Service</button></li>
+            <li><button onclick="openLegalModal('contact')" class="hover:text-[var(--accent)]">Contact Us</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-[var(--fg)] pixel-font text-[10px] mb-4">ADS INFO</h4>
+          <p>We use Google AdSense to support this site.</p>
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="block mt-2 text-[var(--accent)] hover:underline">Google Ad Settings</a>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-[var(--muted)] text-center">
+        <p class="pixel-font text-[8px] opacity-50">© 2026 FREERETROSOUNDS.COM. ALL RIGHTS RESERVED.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- GAME CONTENT -->
+  <div id="game-container" class="pt-20 pb-10 px-2 md:px-4 min-h-screen flex flex-col items-center">
+    <div class="text-center mb-4 md:mb-6">
+      <h2 class="text-base md:text-xl pixel-font text-[var(--secondary)]">TOWER SIEGE</h2>
+      <p class="text-[var(--muted)] text-[10px] md:text-xs mt-2 pixel-font">LVL <span id="level-display">1</span> | SCORE: <span id="score-display">0</span></p>
+      <p class="text-[8px] text-[var(--muted)] mt-1">AMMO: <span id="shots-display" class="text-[var(--accent)]">3</span></p>
+    </div>
+    
+    <div class="relative bg-black p-1 border-4 border-[var(--fg)] w-full max-w-[802px]">
+      <canvas id="game-canvas" width="800" height="500"></canvas>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="game-message" style="display: none;">
+        <div class="bg-[var(--bg)] border-4 border-[var(--fg)] p-4 md:p-6 text-center pointer-events-auto mx-4">
+          <p id="msg-text" class="pixel-font text-xs md:text-sm mb-4">LEVEL COMPLETE!</p>
+          <button id="next-level-btn" class="btn-primary text-[8px] py-2 px-4">NEXT LEVEL</button>
+        </div>
+      </div>
+    </div>
+    <div class="mt-6 flex gap-4">
+      <button id="restart-level" class="btn-primary text-[8px] py-2 px-3 bg-[var(--danger)]">RESTART</button>
+      <button id="back-to-library" class="btn-primary text-[8px] py-2 px-3">LIBRARY</button>
+    </div>
+  </div>
+
+  <!-- MODALS (Sound Packs) -->
+  <div class="modal-overlay" id="modal-overlay"></div>
+  <div class="modal-content" id="modal">
+    <div class="p-4 md:p-6 border-b-4 border-[var(--fg)] flex justify-between items-center flex-shrink-0 bg-[var(--bg-elevated)]">
+      <div>
+        <h3 class="text-xs md:text-sm font-bold pixel-font" id="modal-title">PACK TITLE</h3>
+        <p class="text-[8px] text-[var(--accent)] mt-1 pixel-font" id="modal-meta">CATEGORY</p>
+      </div>
+      <button class="text-[var(--muted)] hover:text-white text-2xl" id="modal-close">&times;</button>
+    </div>
+    <!-- Download Pack Header -->
+    <div class="p-4 border-b-2 border-dashed border-[var(--muted)] bg-[var(--bg)] flex justify-between items-center">
+        <span class="text-[8px] pixel-font text-[var(--fg)]">DOWNLOAD FULL PACK</span>
+        <div class="flex gap-2 items-center">
+            <div id="zip-loader" class="loader"></div>
+            <button id="download-pack-btn" class="btn-secondary">ZIP (WAV)</button>
+        </div>
+    </div>
+    <div class="modal-body" id="sound-list"></div>
+  </div>
+
+  <!-- LEGAL MODALS -->
+  <div class="modal-overlay" id="legal-overlay" onclick="closeLegalModal()"></div>
+  <div class="modal-content" id="legal-modal">
+    <div class="p-4 md:p-6 border-b-4 border-[var(--fg)] flex justify-between items-center flex-shrink-0 bg-[var(--bg-elevated)]">
+      <h3 class="text-xs md:text-sm font-bold pixel-font" id="legal-title">TITLE</h3>
+      <button class="text-[var(--muted)] hover:text-white text-2xl" onclick="closeLegalModal()">&times;</button>
+    </div>
+    <div class="modal-body text-[11px] leading-relaxed space-y-4" id="legal-body"></div>
+  </div>
+
+  <!-- Cookie Banner -->
+  <div id="cookie-banner">
+    <p class="text-[var(--fg)]">
+      We use cookies to personalize ads and analyze traffic. By clicking "Accept", you consent to our use of cookies. 
+      <button onclick="openLegalModal('privacy')" class="text-[var(--accent)] underline">Privacy Policy</button>
+    </p>
+    <div class="flex gap-4">
+      <button id="decline-cookies" class="bg-gray-600 text-white px-4 py-2 text-xs pixel-font border-none cursor-pointer">DECLINE</button>
+      <button id="accept-cookies" class="bg-[var(--success)] text-[var(--bg)] px-4 py-2 text-xs pixel-font border-none cursor-pointer">ACCEPT</button>
+    </div>
+  </div>
+
+  <script>
+    // --- COMPLIANCE & COOKIE LOGIC ---
+    const cookieBanner = document.getElementById('cookie-banner');
+    const userConsent = localStorage.getItem('cookieConsent');
+    if (!userConsent) { cookieBanner.classList.add('visible'); } 
+    else if (userConsent === 'accepted') { (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0; }
+
+    document.getElementById('accept-cookies').onclick = () => {
+        localStorage.setItem('cookieConsent', 'accepted');
+        cookieBanner.classList.remove('visible');
+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
+    };
+    document.getElementById('decline-cookies').onclick = () => {
+        localStorage.setItem('cookieConsent', 'declined');
+        cookieBanner.classList.remove('visible');
+        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+    };
+
+    // Legal Modal Content
+    const legalModal = document.getElementById('legal-modal');
+    const legalOverlay = document.getElementById('legal-overlay');
+    const legalTitle = document.getElementById('legal-title');
+    const legalBody = document.getElementById('legal-body');
+    const legalContent = {
+        privacy: { title: "PRIVACY POLICY", body: `<p>At FreeRetroSounds.com, we respect your privacy.</p><h4 class="pixel-font text-[10px] text-[var(--accent)] mt-4 mb-2">Cookies</h4><p>We use cookies to remember consent preferences and serve ads via Google AdSense.</p>` },
+        terms: { title: "TERMS OF SERVICE", body: `<p>All sound effects are free to use for personal and commercial projects.</p>` },
+        contact: { title: "CONTACT US", body: `<form action="https://formsubmit.co/driveyourtest@gmail.com" method="POST" class="mt-4 space-y-4"><input type="hidden" name="_subject" value="Contact"><input type="text" name="name" class="form-input" placeholder="Name" required><input type="email" name="email" class="form-input" placeholder="Email" required><textarea name="message" rows="4" class="form-input" placeholder="Message" required></textarea><button type="submit" class="btn-primary w-full text-center">SEND</button></form>` },
+        about: { title: "ABOUT US", body: `<p>We provide high-quality, authentic 8-bit sound effects for game developers.</p>` }
+    };
+    function openLegalModal(type) {
+        const content = legalContent[type];
+        if (!content) return;
+        legalTitle.textContent = content.title;
+        legalBody.innerHTML = content.body;
+        legalOverlay.classList.add('visible');
+        legalModal.classList.add('visible');
+    }
+    function closeLegalModal() { legalOverlay.classList.remove('visible'); legalModal.classList.remove('visible'); }
+
+    // --- AUDIO ENGINE ---
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(ctx, freq, type, time, duration, volume) {
+      const osc = ctx.createOscillator(); const gain = ctx.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(volume, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+      osc.start(time); osc.stop(time + duration);
+    }
+    function slideTone(ctx, startFreq, endFreq, type, time, duration, volume) {
+      const osc = ctx.createOscillator(); const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(startFreq, time);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 20), time + duration);
+      osc.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(volume, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+      osc.start(time); osc.stop(time + duration);
+    }
+    function playArpeggio(ctx, notes, type, startTime, noteDuration, volume) {
+      notes.forEach((note, i) => playTone(ctx, note, type, startTime + (i * noteDuration), noteDuration, volume));
+    }
+    function playNoise(ctx, time, duration, filterType, freq, volume) {
+      const bufferSize = ctx.sampleRate * duration;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter(); filter.type = filterType; filter.frequency.value = freq;
+      const gain = ctx.createGain();
+      noise.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(volume, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+      noise.start(time); noise.stop(time + duration);
+    }
+
+    // MASTER RENDERER
+    function renderSound(type, ctx, time = 0) {
+      const now = time; const vol = 0.3;
+      switch(type) {
+        // RPG
+        case 'coin_1': playTone(ctx, 987.77, 'square', now, 0.1, vol); playTone(ctx, 1318.51, 'square', now + 0.1, 0.2, vol); break;
+        case 'coin_2': playTone(ctx, 1174.66, 'square', now, 0.1, vol); playTone(ctx, 1567.98, 'square', now + 0.1, 0.2, vol); break;
+        case 'coin_3': playArpeggio(ctx, [987.77, 1174.66, 1318.51], 'square', now, 0.05, vol); break;
+        case 'powerup_1': [523.25, 659.25, 783.99, 1046.50].forEach((n,i) => playTone(ctx, n, 'square', now + i*0.08, 0.08, vol)); break;
+        case 'powerup_2': slideTone(ctx, 200, 1000, 'sawtooth', now, 0.5, vol); break;
+        case 'key_1': playTone(ctx, 800, 'sine', now, 0.1, vol); playTone(ctx, 1200, 'sine', now + 0.15, 0.1, vol); break;
+        case 'heal_1': slideTone(ctx, 400, 800, 'sine', now, 0.3, vol); break;
+        case 'chest_open': playNoise(ctx, now, 0.2, 'lowpass', 800, 0.2); slideTone(ctx, 300, 600, 'triangle', now, 0.2, vol); break;
+        case 'save': playTone(ctx, 600, 'square', now, 0.1, vol); playTone(ctx, 600, 'square', now + 0.2, 0.1, vol); playTone(ctx, 900, 'square', now + 0.4, 0.2, vol); break;
+        case 'item_get': playTone(ctx, 500, 'square', now, 0.1, vol); playTone(ctx, 700, 'square', now + 0.1, 0.1, vol); playTone(ctx, 900, 'square', now + 0.2, 0.2, vol); break;
+        case 'secret': playNoise(ctx, now, 0.5, 'bandpass', 1500, 0.3); slideTone(ctx, 1500, 500, 'sine', now, 0.5, 0.2); break;
+        case 'level_up': playArpeggio(ctx, [400, 500, 600, 800, 1000], 'square', now, 0.15, vol); break;
+
+        // PHYSICS
+        case 'hit_1': playNoise(ctx, now, 0.1, 'highpass', 2000, 0.5); break;
+        case 'hit_2': playTone(ctx, 200, 'square', now, 0.1, vol); break;
+        case 'explosion_1': playNoise(ctx, now, 0.5, 'lowpass', 400, 0.8); playTone(ctx, 100, 'sawtooth', now, 0.4, 0.3); break;
+        case 'explosion_2': playNoise(ctx, now, 0.7, 'lowpass', 200, 0.9); break;
+        case 'break_glass': playNoise(ctx, now, 0.2, 'highpass', 3000, 0.6); break;
+        case 'break_wood': playNoise(ctx, now, 0.3, 'bandpass', 600, 0.6); break;
+        case 'thud': playTone(ctx, 60, 'sine', now, 0.2, vol); break;
+        case 'splash': playNoise(ctx, now, 0.4, 'lowpass', 1000, 0.5); break;
+        case 'bounce_1': slideTone(ctx, 400, 200, 'square', now, 0.1, vol); break;
+        case 'rock_slide': playNoise(ctx, now, 1.0, 'bandpass', 200, 0.6); break;
+
+        // PLAYER
+        case 'jump_1': slideTone(ctx, 150, 400, 'square', now, 0.15, vol); break;
+        case 'jump_2': slideTone(ctx, 200, 600, 'square', now, 0.2, vol); break;
+        case 'dash_1': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.3); slideTone(ctx, 400, 100, 'sawtooth', now, 0.1, vol); break;
+        case 'step_1': playNoise(ctx, now, 0.05, 'lowpass', 400, 0.3); break;
+        case 'death_1': slideTone(ctx, 600, 50, 'square', now, 0.3, vol); break;
+        case 'hurt_1': playTone(ctx, 200, 'sawtooth', now, 0.1, vol); break;
+
+        // UI
+        case 'ui_select': playTone(ctx, 1200, 'square', now, 0.05, 0.2); break;
+        case 'ui_confirm': playTone(ctx, 600, 'sine', now, 0.05, vol); playTone(ctx, 800, 'sine', now+0.05, 0.1, vol); break;
+        case 'ui_cancel': playTone(ctx, 400, 'triangle', now, 0.1, vol); break;
+        case 'ui_error': playNoise(ctx, now, 0.1, 'bandpass', 500, 0.3); break;
+        case 'ui_scroll': playTone(ctx, 800, 'triangle', now, 0.02, 0.1); break;
+        case 'ui_type': playTone(ctx, 1400, 'square', now, 0.01, 0.1); break;
+        case 'ui_pause': playTone(ctx, 500, 'square', now, 0.1, vol); break;
+        case 'ui_achievement': playArpeggio(ctx, [600, 800, 1000, 1200], 'square', now, 0.1, vol); break;
+
+        // COMBAT
+        case 'sword_1': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.4); slideTone(ctx, 800, 400, 'sawtooth', now, 0.1, 0.2); break;
+        case 'sword_2': playNoise(ctx, now, 0.15, 'highpass', 1500, 0.3); break;
+        case 'arrow_1': slideTone(ctx, 800, 200, 'sawtooth', now, 0.15, vol); break;
+        case 'magic_cast_1': playNoise(ctx, now, 0.4, 'highpass', 3000, 0.3); playTone(ctx, 800, 'sine', now, 0.4, 0.2); break;
+        case 'magic_fire': playNoise(ctx, now, 0.4, 'bandpass', 400, 0.6); slideTone(ctx, 200, 800, 'sawtooth', now, 0.4, 0.2); break;
+        case 'shield_1': playNoise(ctx, now, 0.2, 'highpass', 1500, 0.3); playTone(ctx, 400, 'triangle', now, 0.1, vol); break;
+        case 'block_metal': playNoise(ctx, now, 0.15, 'bandpass', 2500, 0.5); playTone(ctx, 600, 'square', now, 0.05, 0.2); break;
+
+        // SCIFI
+        case 'laser_1': slideTone(ctx, 800, 200, 'sawtooth', now, 0.2, vol); break;
+        case 'laser_2': slideTone(ctx, 1200, 100, 'square', now, 0.3, vol); break;
+        case 'engine_hum': playTone(ctx, 80, 'sawtooth', now, 0.5, 0.1); break;
+        case 'teleport_1': slideTone(ctx, 1500, 100, 'sine', now, 0.5, vol); playNoise(ctx, now, 0.4, 'highpass', 2000, 0.3); break;
+        case 'alarm_1': playTone(ctx, 800, 'square', now, 0.2, vol); playTone(ctx, 600, 'square', now + 0.2, 0.2, vol); break;
+        case 'forcefield': playNoise(ctx, now, 0.5, 'bandpass', 1000, 0.4); break;
+
+        // HORROR
+        case 'horror_1': playNoise(ctx, now, 1.0, 'lowpass', 200, 0.4); slideTone(ctx, 100, 50, 'sawtooth', now, 1.0, 0.2); break;
+        case 'ghost_1': slideTone(ctx, 800, 200, 'sine', now, 0.8, vol); break;
+        case 'heartbeat': playTone(ctx, 60, 'sine', now, 0.1, 0.4); playTone(ctx, 60, 'sine', now + 0.15, 0.1, 0.3); break;
+        case 'thunder': playNoise(ctx, now, 1.0, 'lowpass', 100, 0.8); playTone(ctx, 40, 'sawtooth', now, 0.5, 0.3); break;
+        case 'wind': playNoise(ctx, now, 1.5, 'lowpass', 600, 0.3); break;
+
+        // VEHICLES
+        case 'car_engine': playTone(ctx, 70, 'sawtooth', now, 0.5, 0.15); playNoise(ctx, now, 0.5, 'bandpass', 150, 0.2); break;
+        case 'car_horn': playTone(ctx, 400, 'square', now, 0.4, vol); break;
+        case 'boost': slideTone(ctx, 100, 400, 'sawtooth', now, 0.3, vol); playNoise(ctx, now, 0.3, 'bandpass', 800, 0.3); break;
+        case 'brake': playNoise(ctx, now, 0.4, 'highpass', 1500, 0.4); break;
+        case 'crash': playNoise(ctx, now, 0.6, 'lowpass', 300, 0.8); playTone(ctx, 80, 'square', now, 0.3, 0.4); break;
+
+        // CASINO
+        case 'slot_spin': playNoise(ctx, now, 1.0, 'bandpass', 1000, 0.2); break;
+        case 'slot_stop': playTone(ctx, 800, 'square', now, 0.05, 0.2); break;
+        case 'coin_drop': playTone(ctx, 800, 'sine', now, 0.1, vol); playTone(ctx, 600, 'sine', now+0.1, 0.1, vol); break;
+        case 'jackpot': playArpeggio(ctx, [800, 1000, 1200, 1400, 1600], 'square', now, 0.1, vol); break;
+        case 'card_flip': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.4); break;
+        case 'dice_roll': playNoise(ctx, now, 0.5, 'bandpass', 800, 0.5); break;
+        case 'chip_stack': playTone(ctx, 2000, 'triangle', now, 0.02, 0.2); playTone(ctx, 2000, 'triangle', now+0.05, 0.02, 0.2); break;
+
+        // CARTOON
+        case 'boing': slideTone(ctx, 300, 600, 'sine', now, 0.1, vol); slideTone(ctx, 600, 300, 'sine', now+0.1, 0.1, vol); break;
+        case 'pop': playTone(ctx, 600, 'sine', now, 0.05, vol); break;
+        case 'slip': slideTone(ctx, 800, 200, 'sine', now, 0.2, vol); break;
+        case 'bounce_cartoon': slideTone(ctx, 500, 200, 'triangle', now, 0.1, vol); break;
+        case 'eye_pop': playTone(ctx, 1500, 'square', now, 0.05, vol); break;
+        case 'jaw_drop': slideTone(ctx, 1000, 200, 'sine', now, 0.3, vol); break;
+        case 'run_away': playArpeggio(ctx, [400, 500, 600, 700, 800, 900], 'square', now, 0.03, vol); break;
+
+        // SPACE
+        case 'satellite': playTone(ctx, 1200, 'sine', now, 0.2, vol); break;
+        case 'meteor': slideTone(ctx, 200, 50, 'sawtooth', now, 0.4, vol); break;
+        case 'ufo': playTone(ctx, 400, 'sine', now, 0.5, vol); playTone(ctx, 405, 'sine', now, 0.5, vol); break;
+        case 'comms': playNoise(ctx, now, 0.2, 'bandpass', 1000, 0.3); break;
+        case 'docking': playTone(ctx, 200, 'triangle', now, 0.5, vol); break;
+        case 'sensor': playTone(ctx, 2000, 'sine', now, 0.02, 0.2); break;
+
+        // SPORTS
+        case 'whistle': playNoise(ctx, now, 0.5, 'highpass', 2000, 0.6); playTone(ctx, 2000, 'sine', now, 0.5, 0.3); break;
+        case 'crowd_cheer': playNoise(ctx, now, 2.0, 'lowpass', 1200, 0.5); break;
+        case 'crowd_boo': playNoise(ctx, now, 1.0, 'lowpass', 400, 0.4); break;
+        case 'basketball_bounce': playTone(ctx, 100, 'sine', now, 0.1, vol); playNoise(ctx, now, 0.05, 'highpass', 1000, 0.2); break;
+        case 'tennis_hit': playNoise(ctx, now, 0.1, 'bandpass', 2000, 0.5); break;
+        case 'golf_swing': playNoise(ctx, now, 0.3, 'highpass', 1500, 0.3); break;
+        case 'bell_ring': playTone(ctx, 800, 'triangle', now, 0.5, vol); break;
+
+        // PUZZLE
+        case 'match_3': playTone(ctx, 600, 'square', now, 0.05, vol); playTone(ctx, 800, 'square', now+0.05, 0.05, vol); playTone(ctx, 1000, 'square', now+0.1, 0.1, vol); break;
+        case 'swap': playTone(ctx, 400, 'triangle', now, 0.05, vol); break;
+        case 'falling_block': slideTone(ctx, 400, 100, 'square', now, 0.1, vol); break;
+        case 'clear_row': playArpeggio(ctx, [400, 500, 600, 800], 'square', now, 0.08, vol); break;
+        case 'invalid_move': playNoise(ctx, now, 0.1, 'bandpass', 400, 0.3); break;
+        case 'combo': playArpeggio(ctx, [600, 800, 1000, 1200, 1400], 'square', now, 0.06, vol); break;
+
+        // CYBERPUNK
+        case 'glitch_1': playNoise(ctx, now, 0.2, 'highpass', 3000, 0.5); break;
+        case 'data_transfer': playArpeggio(ctx, [1200, 1400, 1600, 1800], 'square', now, 0.05, 0.2); break;
+        case 'hologram': playNoise(ctx, now, 0.5, 'bandpass', 2000, 0.4); playTone(ctx, 1000, 'sine', now, 0.5, 0.2); break;
+        case 'neon_hum': playTone(ctx, 200, 'sawtooth', now, 1.0, 0.1); break;
+        case 'cyber_step': playNoise(ctx, now, 0.1, 'bandpass', 1500, 0.4); playTone(ctx, 100, 'square', now, 0.05, 0.3); break;
+        case 'modem': playNoise(ctx, now, 0.5, 'bandpass', 1000, 0.5); break;
+
+        // RACING
+        case 'countdown_beep': playTone(ctx, 1000, 'square', now, 0.1, vol); break;
+        case 'countdown_go': playTone(ctx, 1500, 'square', now, 0.2, vol); break;
+        case 'turbo_engage': slideTone(ctx, 200, 800, 'sawtooth', now, 0.2, vol); break;
+        case 'nitro': playNoise(ctx, now, 0.5, 'bandpass', 500, 0.6); break;
+        case 'gear_up': slideTone(ctx, 300, 500, 'square', now, 0.1, vol); break;
+        case 'lap_bell': playTone(ctx, 1500, 'sine', now, 0.3, vol); break;
+
+        // COOKING
+        case 'chop': playNoise(ctx, now, 0.05, 'lowpass', 800, 0.4); break;
+        case 'sizzle': playNoise(ctx, now, 1.0, 'bandpass', 3000, 0.3); break;
+        case 'bubble': playTone(ctx, 400, 'sine', now, 0.05, 0.1); break;
+        case 'microwave_beep': playTone(ctx, 2000, 'square', now, 0.1, vol); break;
+        case 'fridge_open': playNoise(ctx, now, 0.3, 'lowpass', 500, 0.3); break;
+        case 'timer': playTone(ctx, 800, 'square', now, 0.1, vol); break;
+
+        // JUNGLE
+        case 'bird_1': slideTone(ctx, 1200, 1600, 'sine', now, 0.1, vol); break;
+        case 'bird_2': playArpeggio(ctx, [1500, 1700, 1500], 'sine', now, 0.05, vol); break;
+        case 'insect_buzz': playTone(ctx, 200, 'sawtooth', now, 0.5, 0.1); break;
+        case 'monkey': slideTone(ctx, 800, 400, 'sawtooth', now, 0.2, vol); break;
+        case 'water_drip': playTone(ctx, 800, 'sine', now, 0.1, 0.1); break;
+        case 'leaves': playNoise(ctx, now, 0.5, 'bandpass', 5000, 0.2); break;
+
+        // INDUSTRIAL
+        case 'drill': playNoise(ctx, now, 0.5, 'bandpass', 3000, 0.5); break;
+        case 'hammer': playTone(ctx, 100, 'square', now, 0.05, vol); break;
+        case 'saw': playNoise(ctx, now, 0.5, 'bandpass', 1500, 0.5); break;
+        case 'steam': playNoise(ctx, now, 0.5, 'highpass', 2000, 0.4); break;
+        case 'conveyor': playTone(ctx, 100, 'triangle', now, 0.5, 0.1); break;
+        case 'furnace': playNoise(ctx, now, 1.0, 'lowpass', 200, 0.4); break;
+
+        // Game SFX (Internal)
+        case 'launch': slideTone(ctx, 300, 100, 'sawtooth', now, 0.2, vol); playNoise(ctx, now, 0.1, 'lowpass', 800, 0.2); break;
+        case 'impact': playNoise(ctx, now, 0.1, 'highpass', 1000, 0.5); playTone(ctx, 100, 'square', now, 0.05, 0.2); break;
+        case 'win': playArpeggio(ctx, [523.25, 659.25, 783.99, 1046.50, 1318.51], 'square', now, 0.15, vol); break;
+        case 'fail': slideTone(ctx, 400, 100, 'sawtooth', now, 1.0, vol); break;
+        case 'select': playTone(ctx, 1200, 'square', now, 0.05, 0.2); break;
+        case 'die': slideTone(ctx, 600, 50, 'square', now, 0.3, vol); break;
+        default: playTone(ctx, 440, 'square', now, 0.2, vol); break;
+      }
+    }
+
+    function playSound(type) {
+      initAudio();
+      renderSound(type, audioCtx, audioCtx.currentTime);
+    }
+
+    // --- WAV & ZIP ENCODER ---
+    function generateWavData(type) {
+      const sampleRate = 44100;
+      const duration = 1.5; 
+      const offlineCtx = new OfflineAudioContext(1, sampleRate * duration, sampleRate);
+      renderSound(type, offlineCtx, 0);
+      return offlineCtx.startRendering().then(buffer => bufferToWave(buffer, buffer.length));
+    }
+
+    function bufferToWave(abuffer, len) {
+      const numOfChan = abuffer.numberOfChannels;
+      const length = len * numOfChan * 2 + 44;
+      const buffer = new ArrayBuffer(length);
+      const view = new DataView(buffer);
+      const channels = []; let sample; let offset = 0; let pos = 0;
+      
+      const setUint16 = (data) => { view.setUint16(pos, data, true); pos += 2; };
+      const setUint32 = (data) => { view.setUint32(pos, data, true); pos += 4; };
+      
+      setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157); 
+      setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+      setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan); 
+      setUint16(numOfChan * 2); setUint16(16);
+      setUint32(0x61746164); setUint32(length - pos - 4);
+
+      for (let i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+      
+      while (pos < length) {
+        for (let i = 0; i < numOfChan; i++) {
+          sample = Math.max(-1, Math.min(1, channels[i][offset]));
+          sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+          view.setInt16(pos, sample, true);
+          pos += 2;
+        }
+        offset++;
+      }
+      return buffer;
+    }
+
+    // Minimal Zipper (Store Method)
+    class Zipper {
+      constructor() { this.files = []; }
+      addFile(name, data) { this.files.push({ name, data: new Uint8Array(data) }); }
+      generate() {
+        const encoder = new TextEncoder();
+        let dataSize = 0;
+        let centralDirSize = 0;
+        
+        const localHeaders = this.files.map(f => {
+            const nameBytes = encoder.encode(f.name);
+            const header = new Uint8Array(30 + nameBytes.length);
+            const view = new DataView(header.buffer);
+            view.setUint32(0, 0x04034b50, true); // sig
+            view.setUint16(4, 10, true); // version
+            view.setUint16(6, 0, true); // flags
+            view.setUint16(8, 0, true); // compression (store)
+            view.setUint16(10, 0, true); // time
+            view.setUint16(12, 0, true); // date
+            view.setUint32(14, this.crc32(f.data), true); // crc
+            view.setUint32(18, f.data.length, true); // comp size
+            view.setUint32(22, f.data.length, true); // uncomp size
+            view.setUint16(26, nameBytes.length, true); // name len
+            view.setUint16(28, 0, true); // extra len
+            header.set(nameBytes, 30);
+            dataSize += header.length + f.data.length;
+            return { header, data: f.data, nameLen: nameBytes.length, crc: this.crc32(f.data) };
+        });
+
+        const centralHeaders = this.files.map((f, i) => {
+            const nameBytes = encoder.encode(f.name);
+            const header = new Uint8Array(46 + nameBytes.length);
+            const view = new DataView(header.buffer);
+            view.setUint32(0, 0x02014b50, true);
+            view.setUint16(4, 20, true); // version made by
+            view.setUint16(6, 10, true); // version needed
+            view.setUint16(8, 0, true);
+            view.setUint16(10, 0, true); // compression
+            view.setUint16(12, 0, true);
+            view.setUint16(14, 0, true);
+            view.setUint32(16, localHeaders[i].crc, true);
+            view.setUint32(20, f.data.length, true);
+            view.setUint32(24, f.data.length, true);
+            view.setUint16(28, nameBytes.length, true);
+            view.setUint16(30, 0, true); // comment len
+            view.setUint16(32, 0, true); // disk start
+            view.setUint16(34, 0, true); // internal attr
+            view.setUint32(36, 0, true); // external attr
+            view.setUint32(40, localHeaders.slice(0, i).reduce((acc, h) => acc + h.header.length + h.data.length, 0), true); // offset
+            header.set(nameBytes, 46);
+            centralDirSize += header.length;
+            return header;
+        });
+
+        const endHeader = new Uint8Array(22);
+        const ev = new DataView(endHeader.buffer);
+        ev.setUint32(0, 0x06054b50, true);
+        ev.setUint16(4, 0, true);
+        ev.setUint16(6, 0, true);
+        ev.setUint16(8, this.files.length, true);
+        ev.setUint16(10, this.files.length, true);
+        ev.setUint32(12, centralDirSize, true);
+        ev.setUint32(16, dataSize, true);
+        ev.setUint16(20, 0, true);
+
+        const totalSize = dataSize + centralDirSize + 22;
+        const result = new Uint8Array(totalSize);
+        let offset = 0;
+        localHeaders.forEach(h => { result.set(h.header, offset); offset += h.header.length; result.set(h.data, offset); offset += h.data.length; });
+        centralHeaders.forEach(h => { result.set(h, offset); offset += h.length; });
+        result.set(endHeader, offset);
+
+        return result.buffer;
+      }
+      crc32(data) {
+        let crc = -1;
+        for (let i = 0; i < data.length; i++) {
+           crc = (crc >>> 8) ^ this.crcTable[(crc ^ data[i]) & 0xFF];
+        }
+        return (crc ^ (-1)) >>> 0;
+      }
+      get crcTable() {
+        if (!this._crcTable) {
+          this._crcTable = new Uint32Array(256);
+          for (let n = 0; n < 256; n++) {
+            let c = n;
+            for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+            this._crcTable[n] = c;
+          }
+        }
+        return this._crcTable;
+      }
+    }
+
+    async function downloadPack(pack) {
+      const btn = document.getElementById('download-pack-btn');
+      const loader = document.getElementById('zip-loader');
+      btn.style.display = 'none';
+      loader.style.display = 'block';
+
+      const zipper = new Zipper();
+      
+      // Generate WAV data for each sound
+      for (const sound of pack.sounds) {
+        const wavData = await generateWavData(sound.type);
+        zipper.addFile(`${sound.name.replace(/[^a-z0-9]/gi, '_')}.wav`, wavData);
+      }
+
+      const zipData = zipper.generate();
+      const blob = new Blob([zipData], { type: 'application/zip' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${pack.title.replace(/\s+/g, '_')}_Pack.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      loader.style.display = 'none';
+      btn.style.display = 'block';
+    }
+
+    // --- DATA LAYER (18 PACKS) ---
+    const soundPacks = [
+      { id: 1, title: "RPG Essentials", category: "RPG", color: "#29adff", sounds: [
+        { name: "Coin (Classic)", type: "coin_1" }, { name: "Coin (High)", type: "coin_2" }, { name: "Coin (Fast)", type: "coin_3" },
+        { name: "Powerup (Rise)", type: "powerup_1" }, { name: "Powerup (Max)", type: "powerup_2" },
+        { name: "Key (Jingle)", type: "key_1" }, { name: "Heal", type: "heal_1" }, { name: "Chest Open", type: "chest_open" },
+        { name: "Save Game", type: "save" }, { name: "Item Get", type: "item_get" }, { name: "Secret Found", type: "secret" },
+        { name: "Level Up", type: "level_up" }
+      ]},
+      { id: 2, title: "Physics & Impacts", category: "SFX", color: "#ff6c24", sounds: [
+        { name: "Impact Soft", type: "hit_1" }, { name: "Impact Hard", type: "hit_2" },
+        { name: "Explosion (Std)", type: "explosion_1" }, { name: "Explosion (Deep)", type: "explosion_2" },
+        { name: "Break Glass", type: "break_glass" }, { name: "Break Wood", type: "break_wood" },
+        { name: "Thud", type: "thud" }, { name: "Splash", type: "splash" }, { name: "Bounce", type: "bounce_1" },
+        { name: "Rock Slide", type: "rock_slide" }
+      ]},
+      { id: 3, title: "Player Actions", category: "GAME", color: "#ff004d", sounds: [
+        { name: "Jump 1", type: "jump_1" }, { name: "Jump 2", type: "jump_2" },
+        { name: "Dash", type: "dash_1" }, { name: "Footstep", type: "step_1" },
+        { name: "Death", type: "death_1" }, { name: "Hurt", type: "hurt_1" }
+      ]},
+      { id: 4, title: "System & UI", category: "UI", color: "#00ff94", sounds: [
+        { name: "Select", type: "ui_select" }, { name: "Confirm", type: "ui_confirm" }, { name: "Cancel", type: "ui_cancel" },
+        { name: "Error", type: "ui_error" }, { name: "Scroll", type: "ui_scroll" }, { name: "Typing", type: "ui_type" },
+        { name: "Pause", type: "ui_pause" }, { name: "Achievement", type: "ui_achievement" }
+      ]},
+      { id: 5, title: "Fantasy Combat", category: "RPG", color: "#c2c3c7", sounds: [
+        { name: "Sword Swing 1", type: "sword_1" }, { name: "Sword Swing 2", type: "sword_2" },
+        { name: "Arrow Shoot", type: "arrow_1" }, { name: "Magic Cast", type: "magic_cast_1" },
+        { name: "Fireball", type: "magic_fire" }, { name: "Shield Hit", type: "shield_1" }, { name: "Block Metal", type: "block_metal" }
+      ]},
+      { id: 6, title: "Sci-Fi Tech", category: "UI", color: "#3a86ff", sounds: [
+        { name: "Laser 1", type: "laser_1" }, { name: "Laser 2", type: "laser_2" },
+        { name: "Engine Hum", type: "engine_hum" }, { name: "Teleport", type: "teleport_1" },
+        { name: "Alarm", type: "alarm_1" }, { name: "Forcefield", type: "forcefield" }
+      ]},
+      { id: 7, title: "Horror & Atmosphere", category: "SFX", color: "#8b9bb4", sounds: [
+        { name: "Drone", type: "horror_1" }, { name: "Ghost", type: "ghost_1" },
+        { name: "Heartbeat", type: "heartbeat" }, { name: "Thunder", type: "thunder" }, { name: "Wind", type: "wind" }
+      ]},
+      { id: 8, title: "Vehicles & Racing", category: "SFX", color: "#41ae76", sounds: [
+        { name: "Car Engine", type: "car_engine" }, { name: "Horn", type: "car_horn" }, { name: "Boost", type: "boost" },
+        { name: "Brake", type: "brake" }, { name: "Crash", type: "crash" },
+        { name: "Countdown Beep", type: "countdown_beep" }, { name: "Go Signal", type: "countdown_go" },
+        { name: "Turbo", type: "turbo_engage" }, { name: "Gear Shift", type: "gear_up" }
+      ]},
+      { id: 9, title: "Casino & Board Games", category: "GAME", color: "#ffd700", sounds: [
+        { name: "Slot Spin", type: "slot_spin" }, { name: "Slot Stop", type: "slot_stop" },
+        { name: "Coin Drop", type: "coin_drop" }, { name: "Jackpot", type: "jackpot" },
+        { name: "Card Flip", type: "card_flip" }, { name: "Dice Roll", type: "dice_roll" }, { name: "Chip Stack", type: "chip_stack" }
+      ]},
+      { id: 10, title: "Cartoon & Comedy", category: "SFX", color: "#ff77a8", sounds: [
+        { name: "Boing", type: "boing" }, { name: "Pop", type: "pop" }, { name: "Slip", type: "slip" },
+        { name: "Bounce", type: "bounce_cartoon" }, { name: "Eye Pop", type: "eye_pop" },
+        { name: "Jaw Drop", type: "jaw_drop" }, { name: "Run Away", type: "run_away" }
+      ]},
+      { id: 11, title: "Space & Aliens", category: "SFX", color: "#7b68ee", sounds: [
+        { name: "Satellite", type: "satellite" }, { name: "Meteor", type: "meteor" },
+        { name: "UFO", type: "ufo" }, { name: "Comms", type: "comms" },
+        { name: "Docking", type: "docking" }, { name: "Sensor", type: "sensor" }
+      ]},
+      { id: 12, title: "Sports & Crowd", category: "SFX", color: "#00bfff", sounds: [
+        { name: "Whistle", type: "whistle" }, { name: "Cheer", type: "crowd_cheer" },
+        { name: "Boo", type: "crowd_boo" }, { name: "Basketball", type: "basketball_bounce" },
+        { name: "Tennis Hit", type: "tennis_hit" }, { name: "Golf Swing", type: "golf_swing" }, { name: "Bell", type: "bell_ring" }
+      ]},
+      { id: 13, title: "Puzzle Game", category: "GAME", color: "#ffec27", sounds: [
+        { name: "Match 3", type: "match_3" }, { name: "Swap", type: "swap" },
+        { name: "Falling Block", type: "falling_block" }, { name: "Clear Row", type: "clear_row" },
+        { name: "Invalid Move", type: "invalid_move" }, { name: "Combo", type: "combo" }
+      ]},
+      { id: 14, title: "Cyberpunk & Glitch", category: "SFX", color: "#ff00ff", sounds: [
+        { name: "Glitch 1", type: "glitch_1" }, { name: "Data Transfer", type: "data_transfer" },
+        { name: "Hologram", type: "hologram" }, { name: "Neon Hum", type: "neon_hum" },
+        { name: "Cyber Step", type: "cyber_step" }, { name: "Modem", type: "modem" }
+      ]},
+      { id: 15, title: "Cooking & Kitchen", category: "SFX", color: "#cd853f", sounds: [
+        { name: "Chop", type: "chop" }, { name: "Sizzle", type: "sizzle" },
+        { name: "Bubble", type: "bubble" }, { name: "Microwave", type: "microwave_beep" },
+        { name: "Fridge", type: "fridge_open" }, { name: "Timer", type: "timer" }
+      ]},
+      { id: 16, title: "Jungle & Wildlife", category: "SFX", color: "#228b22", sounds: [
+        { name: "Bird Chirp 1", type: "bird_1" }, { name: "Bird Chirp 2", type: "bird_2" },
+        { name: "Insect Buzz", type: "insect_buzz" }, { name: "Monkey", type: "monkey" },
+        { name: "Water Drip", type: "water_drip" }, { name: "Leaves", type: "leaves" }
+      ]},
+      { id: 17, title: "Industrial Machines", category: "SFX", color: "#708090", sounds: [
+        { name: "Drill", type: "drill" }, { name: "Hammer", type: "hammer" },
+        { name: "Saw", type: "saw" }, { name: "Steam", type: "steam" },
+        { name: "Conveyor", type: "conveyor" }, { name: "Furnace", type: "furnace" }
+      ]},
+      { id: 18, title: "Nitro & Turbo", category: "SFX", color: "#ff4500", sounds: [
+        { name: "Nitro Burst", type: "nitro" }, { name: "Turbo Engage", type: "turbo_engage" },
+        { name: "Boost 1", type: "boost" }, { name: "Gear Up", type: "gear_up" }
+      ]}
+    ];
+
+    // --- UI LOGIC ---
+    const siteContent = document.getElementById('site-content');
+    const gameContainer = document.getElementById('game-container');
+    const navLibrary = document.getElementById('nav-library');
+    const navGame = document.getElementById('nav-game');
+    const playGameBtnMain = document.getElementById('play-game-btn-main');
+    const backToLibraryBtn = document.getElementById('back-to-library');
+    
+    function showLibrary() {
+      siteContent.style.display = 'block'; gameContainer.style.display = 'none';
+      if(typeof gameLoop !== 'undefined') cancelAnimationFrame(gameLoop);
+    }
+    function showGame() {
+      siteContent.style.display = 'none'; gameContainer.style.display = 'flex'; initGame();
+    }
+    navLibrary.addEventListener('click', showLibrary);
+    navGame.addEventListener('click', showGame);
+    playGameBtnMain.addEventListener('click', showGame);
+    backToLibraryBtn.addEventListener('click', showLibrary);
+
+    const packsContainer = document.getElementById('packs-container');
+    soundPacks.forEach((pack) => {
+      const card = document.createElement('div');
+      card.className = 'pack-card reveal';
+      card.innerHTML = `
+        <div class="p-4 md:p-6">
+          <span class="text-[8px] font-bold pixel-font" style="color: ${pack.color}">${pack.category}</span>
+          <h3 class="text-xs md:text-sm font-bold mt-3 mb-1 pixel-font">${pack.title}</h3>
+          <p class="text-[10px] md:text-xs text-[var(--muted)] mb-4 md:mb-6">${pack.sounds.length} Sounds</p>
+          <div class="border-t-2 border-dashed border-[var(--muted)] pt-4 flex justify-between items-center">
+             <span class="text-[8px] text-[var(--muted)] pixel-font">VIEW PACK</span>
+             <span style="color: ${pack.color}">→</span>
+          </div>
+        </div>`;
+      card.onclick = () => openModal(pack);
+      packsContainer.appendChild(card);
+    });
+
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal');
+    const soundList = document.getElementById('sound-list');
+    let currentPack = null;
+
+    function openModal(pack) {
+      currentPack = pack;
+      document.getElementById('modal-title').textContent = pack.title.toUpperCase();
+      document.getElementById('modal-meta').textContent = pack.category;
+      document.getElementById('download-pack-btn').onclick = () => downloadPack(pack);
+      soundList.innerHTML = '';
+      pack.sounds.forEach(sound => {
+        const item = document.createElement('div');
+        item.className = 'sound-item';
+        item.innerHTML = `
+          <span class="text-[10px] md:text-xs truncate pr-2">${sound.name}</span>
+          <div class="flex gap-2 flex-shrink-0">
+            <button class="action-btn play-btn" data-type="${sound.type}">►</button>
+            <button class="action-btn dl dl-btn" data-type="${sound.type}">↓</button>
+          </div>`;
+        item.querySelector('.play-btn').onclick = () => playSound(sound.type);
+        item.querySelector('.dl-btn').onclick = () => generateWavData(sound.type).then(buffer => {
+            const blob = new Blob([buffer], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `${sound.type}.wav`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        });
+        soundList.appendChild(item);
+      });
+      modalOverlay.classList.add('visible');
+      modal.classList.add('visible');
+    }
+    
+    modalOverlay.onclick = () => { modalOverlay.classList.remove('visible'); modal.classList.remove('visible'); };
+    document.getElementById('modal-close').onclick = () => { modalOverlay.classList.remove('visible'); modal.classList.remove('visible'); };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+    // --- PHYSICS GAME ENGINE (Matter.js) ---
+    const { Engine, Render, Runner, Bodies, Body, Composite, Events, Vector } = Matter;
+
+    let engine, runner;
+    let currentLevel = 0;
+    let score = 0;
+    let shotsLeft = 3;
+    let creatures = [];
+    let blocks = [];
+    let projectiles = [];
+    let gameLoop;
+    let canvas, ctx;
+
+    const slingPos = { x: 120, y: 400 };
+    let isDragging = false;
+    let dragBody = null;
+    let dragPos = { x: 0, y: 0 };
+
+    const levels = [
+      { blocks: [{ x: 600, y: 455, w: 60, h: 30 }, { x: 600, y: 415, w: 60, h: 30 }], creatures: [{ x: 600, y: 385 }] },
+      { blocks: [{ x: 580, y: 455, w: 30, h: 60 }, { x: 660, y: 455, w: 30, h: 60 }, { x: 620, y: 410, w: 100, h: 20 }], creatures: [{ x: 620, y: 385 }, { x: 620, y: 455 }] },
+      { blocks: [{ x: 550, y: 440, w: 20, h: 90 }, { x: 700, y: 440, w: 20, h: 90 }, { x: 625, y: 375, w: 170, h: 20 }, { x: 625, y: 355, w: 60, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 650, y: 455 }, { x: 625, y: 330 }] },
+      { blocks: [{ x: 550, y: 440, w: 20, h: 60 }, { x: 650, y: 440, w: 20, h: 60 }, { x: 600, y: 395, w: 120, h: 20 }, { x: 600, y: 375, w: 20, h: 60 }, { x: 600, y: 330, w: 80, h: 20 }], creatures: [{ x: 600, y: 455 }, { x: 600, y: 300 }, { x: 550, y: 395 }] },
+      { blocks: [{ x: 500, y: 430, w: 20, h: 100 }, { x: 600, y: 430, w: 20, h: 100 }, { x: 550, y: 365, w: 120, h: 20 }, { x: 550, y: 345, w: 20, h: 60 }, { x: 750, y: 455, w: 60, h: 30 }, { x: 750, y: 420, w: 20, h: 40 }], creatures: [{ x: 550, y: 305 }, { x: 500, y: 455 }, { x: 600, y: 455 }, { x: 750, y: 385 }, { x: 750, y: 455 }] },
+      { blocks: [{ x: 500, y: 420, w: 20, h: 100 }, { x: 700, y: 420, w: 20, h: 100 }, { x: 600, y: 355, w: 220, h: 20 }, { x: 600, y: 455, w: 40, h: 30 }], creatures: [{ x: 550, y: 420 }, { x: 650, y: 420 }, { x: 600, y: 320 }] },
+      { blocks: [{ x: 650, y: 420, w: 60, h: 120 }, { x: 650, y: 340, w: 40, h: 40 }, { x: 650, y: 290, w: 60, h: 20 }, { x: 650, y: 260, w: 20, h: 40 }], creatures: [{ x: 650, y: 455 }, { x: 650, y: 310 }, { x: 650, y: 220 }] },
+      { blocks: [{ x: 500, y: 420, w: 30, h: 100 }, { x: 560, y: 420, w: 30, h: 100 }, { x: 530, y: 355, w: 90, h: 20 }, { x: 700, y: 420, w: 30, h: 100 }, { x: 760, y: 420, w: 30, h: 100 }, { x: 730, y: 355, w: 90, h: 20 }, { x: 630, y: 380, w: 60, h: 20 }], creatures: [{ x: 530, y: 455 }, { x: 730, y: 455 }, { x: 530, y: 320 }, { x: 730, y: 320 }] },
+      { blocks: [{ x: 500, y: 400, w: 20, h: 140 }, { x: 700, y: 400, w: 20, h: 140 }, { x: 600, y: 315, w: 220, h: 20 }, { x: 550, y: 440, w: 60, h: 60 }, { x: 650, y: 440, w: 60, h: 60 }], creatures: [{ x: 550, y: 395 }, { x: 650, y: 395 }, { x: 600, y: 280 }, { x: 600, y: 455 }] },
+      { blocks: [{ x: 450, y: 400, w: 30, h: 140 }, { x: 750, y: 400, w: 30, h: 140 }, { x: 550, y: 430, w: 20, h: 80 }, { x: 650, y: 430, w: 20, h: 80 }, { x: 600, y: 375, w: 220, h: 20 }, { x: 500, y: 310, w: 40, h: 80 }, { x: 700, y: 310, w: 40, h: 80 }, { x: 600, y: 300, w: 20, h: 100 }, { x: 600, y: 240, w: 120, h: 20 }], creatures: [{ x: 450, y: 315 }, { x: 750, y: 315 }, { x: 600, y: 455 }, { x: 600, y: 200 }, { x: 550, y: 340 }, { x: 650, y: 340 }] }
+    ];
+
+    function initGame() {
+      if (engine) { Runner.stop(runner); Composite.clear(engine.world); }
+      canvas = document.getElementById('game-canvas');
+      ctx = canvas.getContext('2d');
+      engine = Engine.create();
+      engine.world.gravity.y = 1.5;
+      runner = Runner.create();
+      Runner.run(runner, engine);
+      const ground = Bodies.rectangle(400, 510, 820, 60, { isStatic: true, label: 'ground', friction: 1 });
+      Composite.add(engine.world, ground);
+      Events.on(engine, 'collisionStart', handleCollision);
+      loadLevel(currentLevel);
+      if(gameLoop) cancelAnimationFrame(gameLoop);
+      renderLoop();
+      canvas.onmousedown = (e) => startDrag(e.clientX, e.clientY);
+      canvas.onmousemove = (e) => moveDrag(e.clientX, e.clientY);
+      canvas.onmouseup = endDrag;
+      canvas.ontouchstart = (e) => { e.preventDefault(); const t=e.touches[0]; startDrag(t.clientX, t.clientY); };
+      canvas.ontouchmove = (e) => { e.preventDefault(); const t=e.touches[0]; moveDrag(t.clientX, t.clientY); };
+      canvas.ontouchend = endDrag;
+    }
+
+    function loadLevel(levelIndex) {
+      creatures = []; blocks = []; projectiles = []; shotsLeft = 3;
+      const ground = engine.world.bodies.find(b => b.label === 'ground');
+      Composite.clear(engine.world);
+      Composite.add(engine.world, ground);
+      const levelData = levels[levelIndex];
+      levelData.blocks.forEach(s => {
+        const body = Bodies.rectangle(s.x, s.y, s.w, s.h, { label: 'block', restitution: 0.1, friction: 0.9, customWidth: s.w, customHeight: s.h, health: 2, render: { fillStyle: '#7d8594' } });
+        blocks.push(body);
+        Composite.add(engine.world, body);
+      });
+      levelData.creatures.forEach(c => {
+        const creature = Bodies.circle(c.x, c.y, 14, { label: 'creature', restitution: 0.2, friction: 0.5, customRadius: 14 });
+        creatures.push(creature);
+        Composite.add(engine.world, creature);
+      });
+      updateUI();
+      document.getElementById('game-message').style.display = 'none';
+      playSound('select');
+    }
+
+    function handleCollision(event) {
+      event.pairs.forEach(pair => {
+        const bodies = [pair.bodyA, pair.bodyB];
+        let creature = bodies.find(b => b.label === 'creature');
+        let projectile = bodies.find(b => b.label === 'projectile');
+        let block = bodies.find(b => b.label === 'block');
+        let ground = bodies.find(b => b.label === 'ground');
+        if (creature && projectile) killCreature(creature);
+        if (creature && block) { const speed = Math.sqrt(Math.pow(block.velocity.x, 2) + Math.pow(block.velocity.y, 2)); if (speed > 2) killCreature(creature); }
+        if (projectile && block) { const speed = Math.sqrt(Math.pow(projectile.velocity.x, 2) + Math.pow(projectile.velocity.y, 2)); if (speed > 2) { block.health--; playSound('impact'); if (block.health <= 0) { playSound('break_glass'); Composite.remove(engine.world, block); blocks = blocks.filter(b => b.id !== block.id); } } }
+        if (creature && ground) { const speed = Math.abs(creature.velocity.y); if (speed > 10) killCreature(creature); }
+      });
+    }
+
+    function killCreature(creature) { if (Composite.get(engine.world, creature.id, 'body')) { playSound('die'); score += 100; Composite.remove(engine.world, creature); creatures = creatures.filter(c => c.id !== creature.id); updateUI(); setTimeout(checkGameStatus, 500); } }
+
+    function getCanvasCoords(clientX, clientY) { const rect = canvas.getBoundingClientRect(); return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) }; }
+    function startDrag(clientX, clientY) { const {x, y} = getCanvasCoords(clientX, clientY); if (shotsLeft > 0 && Math.hypot(x - slingPos.x, y - slingPos.y) < 60) { isDragging = true; dragBody = Bodies.circle(slingPos.x, slingPos.y, 10, { label: 'projectile', restitution: 0.3, friction: 0.5, frictionAir: 0.01, density: 0.006, customRadius: 10, isStatic: true }); Composite.add(engine.world, dragBody); projectiles.push(dragBody); dragPos = { x, y }; } }
+    function moveDrag(clientX, clientY) { if (!isDragging) return; const {x, y} = getCanvasCoords(clientX, clientY); const dist = Math.hypot(x - slingPos.x, y - slingPos.y); const maxDist = 90; if (dist > maxDist) { const angle = Math.atan2(y - slingPos.y, x - slingPos.x); dragPos.x = slingPos.x + Math.cos(angle) * maxDist; dragPos.y = slingPos.y + Math.sin(angle) * maxDist; } else { dragPos.x = x; dragPos.y = y; } if(dragBody) Body.setPosition(dragBody, dragPos); }
+    function endDrag() { if (!isDragging || !dragBody) return; isDragging = false; const dx = slingPos.x - dragPos.x; const dy = slingPos.y - dragPos.y; Body.setStatic(dragBody, false); Body.setVelocity(dragBody, { x: dx * 0.25, y: dy * 0.25 }); playSound('launch'); dragBody = null; shotsLeft--; updateUI(); setTimeout(checkGameStatus, 2500); }
+
+    function checkGameStatus() { if (isDragging || document.getElementById('game-message').style.display === 'flex') return; if (creatures.length === 0) levelWin(); else if (shotsLeft === 0) levelFail(); }
+    function levelWin() { playSound('win'); currentLevel++; if (currentLevel >= levels.length) { showMessage("YOU WIN!"); document.getElementById('next-level-btn').textContent = "PLAY AGAIN"; document.getElementById('next-level-btn').onclick = () => { currentLevel = 0; score = 0; loadLevel(currentLevel); }; } else { showMessage("LEVEL COMPLETE!"); document.getElementById('next-level-btn').textContent = "NEXT"; document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel); } }
+    function levelFail() { playSound('fail'); showMessage("LEVEL FAILED"); document.getElementById('next-level-btn').textContent = "RETRY"; document.getElementById('next-level-btn').onclick = () => loadLevel(currentLevel); }
+    function showMessage(text) { document.getElementById('msg-text').textContent = text; document.getElementById('game-message').style.display = 'flex'; }
+    function updateUI() { document.getElementById('level-display').textContent = currentLevel + 1; document.getElementById('score-display').textContent = score; document.getElementById('shots-display').textContent = shotsLeft; }
+
+    // --- RENDERER ---
+    function renderLoop() {
+      ctx.fillStyle = '#262b44'; ctx.fillRect(0, 0, 800, 500);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; for(let i=0; i<800; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,500); ctx.stroke(); } for(let i=0; i<500; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(800,i); ctx.stroke(); }
+      drawSlingshot();
+      if (isDragging) { const dx = slingPos.x - dragPos.x; const dy = slingPos.y - dragPos.y; const vx = dx * 0.25; const vy = dy * 0.25; let x = slingPos.x, y = slingPos.y, t_vy = vy; ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'; for (let i = 0; i < 30; i++) { ctx.fillRect(x, y, 4, 4); x += vx * 0.1; t_vy += 0.15; y += t_vy * 0.1; if (y > 500) break; } ctx.strokeStyle = '#ff6c24'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(slingPos.x - 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y); ctx.moveTo(slingPos.x + 15, slingPos.y - 15); ctx.lineTo(dragPos.x, dragPos.y); ctx.stroke(); }
+      blocks.forEach(b => { if (!Composite.get(engine.world, b.id, 'body')) return; ctx.save(); ctx.translate(b.position.x, b.position.y); ctx.rotate(b.angle); ctx.fillStyle = b.health < 2 ? '#ffffff' : '#7d8594'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.fillRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight); ctx.strokeRect(-b.customWidth/2, -b.customHeight/2, b.customWidth, b.customHeight); ctx.restore(); });
+      creatures.forEach(c => { if (!Composite.get(engine.world, c.id, 'body')) return; ctx.save(); ctx.translate(c.position.x, c.position.y); ctx.rotate(c.angle); ctx.fillStyle = '#ff004d'; ctx.beginPath(); ctx.arc(0, 0, c.customRadius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.fillRect(-6, -4, 4, 4); ctx.fillRect(2, -4, 4, 4); ctx.fillRect(-4, 4, 8, 2); ctx.restore(); });
+      projectiles.forEach(p => { if (!Composite.get(engine.world, p.id, 'body')) return; ctx.save(); ctx.translate(p.position.x, p.position.y); ctx.rotate(p.angle); ctx.fillStyle = '#29adff'; ctx.beginPath(); ctx.arc(0, 0, p.customRadius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.fillRect(-5, -3, 3, 3); ctx.fillRect(2, -3, 3, 3); ctx.restore(); });
+      gameLoop = requestAnimationFrame(renderLoop);
+    }
+
+    function drawSlingshot() { ctx.fillStyle = '#5f574f'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.fillRect(slingPos.x - 20, slingPos.y, 40, 80); ctx.strokeRect(slingPos.x - 20, slingPos.y, 40, 80); ctx.fillStyle = '#7d8594'; ctx.beginPath(); ctx.moveTo(slingPos.x - 15, slingPos.y); ctx.lineTo(slingPos.x - 25, slingPos.y - 40); ctx.lineTo(slingPos.x - 15, slingPos.y - 40); ctx.lineTo(slingPos.x - 5, slingPos.y); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(slingPos.x + 15, slingPos.y); ctx.lineTo(slingPos.x + 25, slingPos.y - 40); ctx.lineTo(slingPos.x + 15, slingPos.y - 40); ctx.lineTo(slingPos.x + 5, slingPos.y); ctx.fill(); ctx.stroke(); }
+
+    document.getElementById('restart-level').addEventListener('click', () => loadLevel(currentLevel));
+
+  </script>
+</body>
+</html>
